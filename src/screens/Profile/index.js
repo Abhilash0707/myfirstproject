@@ -1,19 +1,33 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, Pressable, TextInput,Alert } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, Pressable, TextInput,Alert,ScrollView } from 'react-native'
 import { React, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 
 
 const Profile = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleorderdetails, setModalVisibleorderdetails] = useState(false);
   const[currentpassword,SetCurrentpassword]=useState('');
   const[newpassword,SetNewpassword]=useState('');
   const[confirmpassword,SetConfirmpassword]=useState('');
+  const[firstname,SetFirstname]=useState('');
+  const[lastname,SetLastname]=useState('');
+  const[city,SetCity]=useState('');
+  const[address,SetAddress]=useState('');
+  const[state,SetState]=useState('');
+  const[country,SetCountry]=useState('');
+  const[pincode,SetPincode]=useState('');
+  const[mobile,SetMobile]=useState('');
+
+
   const apicall = async () => {
       const storedEmployeeId = await AsyncStorage.getItem('token');
       // console.log(storedEmployeeId);
@@ -96,6 +110,58 @@ const Profile = () => {
     );
 
   }
+  const billing_address_apicall = async () => {
+    const storedEmployeeId = await AsyncStorage.getItem('token');
+    // console.log(storedEmployeeId);
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/post-address',
+        {
+          method: 'post',
+          headers: {
+            Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            first_name:firstname,
+            last_name:lastname,
+            city:city,
+            address:address,
+            state:state,
+            country:country,
+            pincode:pincode,
+            mobile:mobile
+
+            
+          }),
+
+        },
+      );
+     
+      
+      console.log(await response.json())
+      // const respo=await response.json()
+      // Alert.alert(await response.json() );
+      // console.log(respo)
+   
+    
+    } catch (error) {
+      console.error(error)
+    } finally {
+    }
+    
+    setModalVisibleorderdetails(!modalVisibleorderdetails)
+    SetFirstname('')
+    SetLastname('')
+    SetCity('')
+    SetAddress('')
+    SetState('')
+    SetCountry('')
+    SetPincode('')
+    SetMobile('')
+  };
+ 
 
   return (
     <View style={styles.conatiner}>
@@ -144,14 +210,93 @@ const Profile = () => {
           >
             <Text style={{fontSize:18,alignSelf:'center',fontWeight:'600'}}>Save</Text>
           </TouchableOpacity>
-            {/* <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            > */}
-              {/* <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable> */}
+           
           </View>
         </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleorderdetails}
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalVisibleorderdetails(!modalVisibleorderdetails);
+        }}>
+          <ScrollView>
+          <View style={styles.centeredView}>
+          <View style={styles.modalView1}>
+          <Entypo
+          name="squared-cross"
+          size={30}
+          color="black"
+          // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+          onPress={() =>setModalVisibleorderdetails(!modalVisibleorderdetails)}
+          style={{alignSelf:'flex-end'}}
+        />
+            <Text style={styles.modalText}>FIRST NAME</Text>
+            <TextInput
+            value={firstname}
+            style={styles.cart1}
+            onChangeText={text => SetFirstname(text)}
+          />
+           <Text style={styles.modalText}>LAST NAME</Text>
+            <TextInput
+            value={lastname}
+            style={styles.cart1}
+            onChangeText={text => SetLastname(text)}
+          />
+             <Text style={styles.modalText}> CITY</Text>
+             <TextInput
+            value={city}
+            style={styles.cart1}
+            onChangeText={text => SetCity(text)}
+          />
+             <Text style={styles.modalText}> ADDRESS</Text>
+             <TextInput
+            value={address}
+            style={styles.cart1}
+            onChangeText={text => SetAddress(text)}
+            multiline={true}
+          />
+           <Text style={styles.modalText}>STATE</Text>
+             <TextInput
+            value={state}
+            style={styles.cart1}
+            onChangeText={text => SetState(text)}
+          />
+           <Text style={styles.modalText}>COUNTRY</Text>
+             <TextInput
+            value={country}
+            style={styles.cart1}
+            onChangeText={text => SetCountry(text)}
+          />
+          <Text style={styles.modalText}>PINCODE</Text>
+             <TextInput
+            value={pincode}
+            style={styles.cart1}
+            onChangeText={text => SetPincode(text)}
+            keyboardType='numeric'
+            maxLength={6}
+          />
+           <Text style={styles.modalText}>MOBILE</Text>
+             <TextInput
+            value={mobile}
+            style={styles.cart1}
+            onChangeText={text => SetMobile(text)}
+            keyboardType='numeric'
+            maxLength={10}
+            
+          />
+
+          <TouchableOpacity style={styles.savebutton1} 
+           onPress={() =>billing_address_apicall()}>
+            <Text style={{fontSize:22,alignSelf:'center',fontWeight:'600'}}>Save</Text>
+          </TouchableOpacity>
+           
+          </View>
+        </View>
+          </ScrollView>
+      
       </Modal>
 
 
@@ -176,7 +321,22 @@ const Profile = () => {
         <Text style={{ fontSize: 20, fontWeight: '500', marginLeft: 20 }}>CHANGE PASSWORD</Text>
 
       </TouchableOpacity>
-      <View style={styles.cart1} ></View>
+      <View  >
+      <TouchableOpacity style={styles.cart1}
+        onPress={() => setModalVisibleorderdetails(!modalVisibleorderdetails)}
+         >
+        <FontAwesome
+          name="first-order"
+          size={28}
+        // color="black"
+        // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+
+        />
+
+        <Text style={{ fontSize: 20, fontWeight: '500', marginLeft: 20 }}>BILLING ADDRESS</Text>
+
+      </TouchableOpacity>
+      </View>
       <View style={styles.cart1} ></View>
       <View style={styles.cart1} ></View>
       {/* <View style={styles.cart1} ></View> */}
@@ -319,5 +479,34 @@ const styles = StyleSheet.create({
     elevation:2,
     shadowOffset:0.1
 
-  }
+  },
+  savebutton1:{
+    width:'60%',
+    borderWidth:1,
+    // padding:10,
+    height:40,
+    elevation:2,
+    // shadowOffset:0.1,
+    justifyContent:'center',
+    marginTop:11
+
+  },
+  modalView1: {
+    // margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: "100%",
+    height: "100%",
+    // flex:1
+  },
 })

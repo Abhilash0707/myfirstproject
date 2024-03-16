@@ -10,6 +10,10 @@ import Cart from '../../screens/Cart';
 import TestScreen from '../../screens/TestScreen';
 import Signup from '../../screens/SignupScreen';
 import Profile from '../../screens/Profile';
+import Wishlist from '../../screens/Wishlist';
+import Listing from '../../screens/Listingpage';
+
+
 
 
 
@@ -32,6 +36,8 @@ const StackNav = () => {
              <Stack.Screen name="TestScreen" component={TestScreen} />
              <Stack.Screen name="Drawernav" component={Drawernav} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Wishlist" component={Wishlist} />
+            <Stack.Screen name="Listing" component={Listing} />
         </Stack.Navigator>
     );
 }

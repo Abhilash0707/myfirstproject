@@ -96,6 +96,7 @@ function CustomDrawerContent({navigation, ...props}) {
           // setIsVisiblesub(index)
           // Handle subcategory item press as needed
           console.log(`Pressed subcategory: ${JSON.stringify(item)}`);
+          navigation.navigate('Listing', {item: item,})
         }}
         labelStyle={{color: 'black', fontWeight: 'bold', fontSize: 15}}
       />

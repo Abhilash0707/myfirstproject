@@ -51,10 +51,10 @@ const Cart = () => {
       );
 
       const json = await response.json();
-      console.log(json, 'rrrrrrrrrrrrrrrrrrrrrrrrrr');
+      // console.log(json.data.images, 'rrrrrrrrrrrrrrrrrrrrrrrrrr');
       setData(json.data);
       json.data.map((item) => {
-        // console.log(item.product.product_price, 'cart item-------');
+        console.log(item.product.images, 'cart item-------');
         setTotal(total + item.product.product_price);
       })
 
@@ -116,7 +116,7 @@ const Cart = () => {
           <Image
             style={{ height: 80, width: 80, marginTop: 10, marginLeft: 10 }}
             // source={require('../../Assects/Images/tshirt.jpg')}
-            source={{ uri: item.item.product.images.small }}
+            source={{ uri: item.item.product.images.Small }}
           />
         </View>
         <View style={{ width: '70%', marginTop: 10 }}>

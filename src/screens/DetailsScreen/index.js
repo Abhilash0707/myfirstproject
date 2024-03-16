@@ -57,10 +57,10 @@ const Details = () => {
       //   // console.log(item.image, 'only------------');
       // });
 
-      if (data?.homeSliderBanners) {
+      if (json?.homeSliderBanners) {
         let arrayModified = [];
 
-        data?.homeSliderBanners?.map(items => {
+        json?.homeSliderBanners?.map(items => {
           arrayModified.push(items.image);
         });
 
@@ -68,22 +68,14 @@ const Details = () => {
         setbannerimg(arrayModified);
         setRefresh(!refresh);
       }
-      if (data?.categories) {
-        data?.categories.map(item => {
-          // console.log(item);
-        });
-      }
+     
     } catch (error) {
       console.error(error);
     } finally {
     }
   };
   // console.log(data, '....len');
-  if (data?.homeFixBanners) {
-    data.homeFixBanners.map(items => {
-      // console.log(items,"Abhi------------------------");
-    });
-  }
+ 
 
   const fixbannerflatlist = ({item, index}) => (
     <View style={{marginHorizontal: 10, marginVertical: 10}}>
@@ -164,29 +156,12 @@ const Details = () => {
     }
   };
 
-  // const nestedflatlist = ({item}) => (
-  //   <View>
-  //     <Image
-  //       source={{uri: item.small}}
-  //       style={{width: 80, height: 80, alignSelf: 'center'}}
-  //     />
-
-  //   </View>
-
-  // );
-
   const productflatlist = ({item, index}) => (
-    <View
+    <TouchableOpacity
       style={{
         marginHorizontal: 10,
-      }}>
-      {/* <FlatList
-        horizontal
-        data={item.brand.images}
-        renderItem={nestedflatlist}
-        keyExtractor={(item, index) => index.toString()}
-        style={{alignSelf: 'center'}}
-      /> */}
+      }}
+      onPress={()=>{navigation.navigate('BuyNow',{item:item})}}>
       <View>
         <Image
           source={{uri: item.images.small}}
@@ -203,7 +178,7 @@ const Details = () => {
           ${item.product_price}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
     
   );
 
@@ -344,30 +319,30 @@ const Details = () => {
     </View>
   );
 
-  const bestsellerflatlist = ({item, index}) => (
-    <View
-      style={{
-        marginHorizontal: 10,
-      }}>
-      <FlatList
-        horizontal
-        data={nestedseller}
-        renderItem={nestedbestseller}
-        keyExtractor={(item, index) => index.toString()}
-        style={{alignSelf: 'center'}}
-      />
-      <Text style={{color: 'black', fontWeight: '800'}}>
-        {item.product_name}
-      </Text>
-      <View style={{flexDirection: 'row'}}>
-        <Text style={{color: 'black', fontWeight: 'bold'}}>Price</Text>
-        <Text style={{color: 'black', fontSize: 16, fontWeight: '500'}}>
-          {' '}
-          ${item.product_price}
-        </Text>
-      </View>
-    </View>
-  );
+  // const bestsellerflatlist = ({item, index}) => (
+  //   <View
+  //     style={{
+  //       marginHorizontal: 10,
+  //     }}>
+  //     <FlatList
+  //       horizontal
+  //       data={nestedseller}
+  //       renderItem={nestedbestseller}
+  //       keyExtractor={(item, index) => index.toString()}
+  //       style={{alignSelf: 'center'}}
+  //     />
+  //     <Text style={{color: 'black', fontWeight: '800'}}>
+  //       {item.product_name}
+  //     </Text>
+  //     <View style={{flexDirection: 'row'}}>
+  //       <Text style={{color: 'black', fontWeight: 'bold'}}>Price</Text>
+  //       <Text style={{color: 'black', fontSize: 16, fontWeight: '500'}}>
+  //         {' '}
+  //         ${item.product_price}
+  //       </Text>
+  //     </View>
+  //   </View>
+  // );
   // console.log(allproducts, '.............all');
 
   return (
@@ -389,7 +364,7 @@ const Details = () => {
             style={{alignSelf: 'center'}}
           />
         </View>
-        {bannerimg ? 
+        {Array.isArray(bannerimg) && bannerimg.length ? 
         (
           <View>
             <SliderBox
