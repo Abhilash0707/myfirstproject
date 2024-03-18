@@ -6,7 +6,7 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
-  FlatList,
+  FlatList,Alert
 } from 'react-native';
 import React from 'react';
 import { useState, useEffect } from 'react';
@@ -19,6 +19,7 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
+
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
 const Cart = () => {
@@ -29,6 +30,10 @@ const Cart = () => {
   //const [amount, setamount] = useState('');
   const [data, setData] = useState();
   const [total, setTotal] = useState(0);
+  const[responsedata,SetResponsedata]= useState([]);
+  const[amount,SetAmount]=useState(0)
+  const[checkoutdata,SetCheckoutdata]=useState()
+
 
 
   const apicall = async () => {
@@ -51,18 +56,64 @@ const Cart = () => {
       );
 
       const json = await response.json();
-      // console.log(json.data.images, 'rrrrrrrrrrrrrrrrrrrrrrrrrr');
+      console.log(json, 'rrrrrrrrrrrrrrrrrrrrrrrrrr');
+      SetResponsedata(json.data);
+
       setData(json.data);
       json.data.map((item) => {
-        console.log(item.product.images, 'cart item-------');
+        // console.log(item.quantity, 'cart item-------');
+        // let price =0
+        // let price_total=price+Number(item.product.product_price)
         setTotal(total + item.product.product_price);
+        // console.log(price_total,'total_________Price');
+
       })
 
       if (json.status === 1) {
+        // price_calculation();
+        
 
       } else {
         Alert.alert(json.message)
       }
+    } catch (error) {
+      console.error(error)
+    } finally {
+    }
+  };
+  const checkout = async () => {
+    const storedEmployeeId = await AsyncStorage.getItem('token');
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/checkout ',
+        {
+          method: 'post',
+          headers: {
+            Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            coupon_id: ''
+          }),
+
+        },
+      );
+
+      const json = await response.json();
+      console.log(json, 'checkout');
+      SetCheckoutdata( await response.json());
+      // return(json)
+
+
+
+      if (json.status === 1) {
+        // price_calculation();
+
+      } else {
+        Alert.alert(json.message)
+      }
+      return json;
     } catch (error) {
       console.error(error)
     } finally {
@@ -102,6 +153,8 @@ const Cart = () => {
       setLoader(false)
     }, 1000);
     apicall()
+    checkout()
+    
 
   }, []);
 
@@ -134,8 +187,8 @@ const Cart = () => {
       </View>
       <View style={{ width: '30%', marginTop: 10 }}>
         <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 15, color: 'black' }}>{item.item.product.product_price}</Text>
-        <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 17, marginTop: 10 }}>* 1</Text>
-        <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 17, marginTop: 10, fontWeight: '800', color: 'green' }}>Rs.{item.item.product.product_price}</Text>
+        <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 17, marginTop: 10 }}>Qty : {item.item.quantity}</Text>
+        <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 17, marginTop: 10, fontWeight: '800', color: 'green' }}>Rs.{ Number(item.item.quantity) * Number(item.item.product.product_price)}</Text>
       </View>
       <View >
       <Entypo
@@ -150,11 +203,30 @@ const Cart = () => {
       
     </View>)
   }
+  const price_calculation=()=>{
+    // console.log('called');
+    let val = 0
+    responsedata.map((item)=>{
+      val= val +(Number(item.product.final_price)*Number(item.quantity)) 
+      // console.log(item.quantity,"responseeee________DDDDData");
+      // console.log(item.product.final_price,"responseeee________pppppppp");
+      // console.log(Number(item.product.final_price)*Number(item.quantity),"responseeee________total");
+      // let qnt=item.quantity
+      // let price=item.product.final_price
+      // SetAmount(Number(item.product.final_price)*Number(item.quantity))
+
+
+    })
+    // let total=amount;
+    // let total_amount=(amount + amount)
+   return val
+    
+}
 
 
 
 
-console.log(total,'total Price');
+// console.log(total,'total Price');
 
 
   return (
@@ -277,22 +349,26 @@ console.log(total,'total Price');
 
 
         }
-        <View>
+        <View style={{marginLeft:'3%',marginRight:'3%'}} >
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <View><Text style={{marginLeft:10,color:'black',fontSize:17}}>price</Text></View>
-            <View><Text style={{marginRight:10,color:'black',fontSize:17}}>RS.8555</Text></View>
+            <View><Text style={{marginRight:10,color:'black',fontSize:17}}>5000</Text></View>
           </View>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <View><Text style={{marginLeft:10,color:'black',fontSize:17}}>Discount</Text></View>
-            <View><Text style={{marginRight:10,color:'black',fontSize:17}}>-6555</Text></View>
+            {/* <View><Text style={{marginRight:10,color:'black',fontSize:17}}>RS. {checkoutdata.data.discount}</Text></View> */}
           </View>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <View><Text style={{marginLeft:10,color:'black',fontSize:17}}>Delivery charges</Text></View>
-            <View><Text style={{marginRight:10,color:'black',fontSize:17}}> Free delivery</Text></View>
+            {/* <View><Text style={{marginRight:10,color:'black',fontSize:17}}>RS. {Math.round(checkoutdata.data.shipping)} </Text></View> */}
+          </View>
+          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+            <View><Text style={{marginLeft:7,color:'black',fontSize:17}}> Tax</Text></View>
+            {/* <View><Text style={{marginRight:10,color:'black',fontSize:17}}>RS. {Math.round(checkoutdata.data.tax)}</Text></View> */}
           </View>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <View><Text style={{marginLeft:7,color:'black',fontSize:17}}> Total Amount</Text></View>
-            <View><Text style={{marginRight:10,color:'black',fontSize:17}}>{total}</Text></View>
+            {/* <View><Text style={{marginRight:10,color:'black',fontSize:17}}>RS. {Math.round(checkoutdata.data.grandtotal)}</Text></View> */}
           </View>
         </View>
 
