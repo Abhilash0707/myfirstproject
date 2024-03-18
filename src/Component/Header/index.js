@@ -25,7 +25,6 @@ const Header = () => {
   const [filtercat, setFiltercat] = useState([]);
 
 
-
   const [ratingarr, setRatingarr] = useState([
     {
       id: '5',
@@ -66,60 +65,40 @@ const Header = () => {
   };
 
 
-  // const sizefiltertogglebtn = index => {
-  //   let sizedata = brand;
-  //   // console.log(radiobtn);
-  //   if (sizedata[index].oncheck) {
-  //     sizedata[index].oncheck = false;
-  //     setSize(sizedata);
-  //     setRadiobtn(!radiobtn);
-  //   } else {
-  //     sizedata[index].oncheck = true;
-  //     setSize(sizedata);
-  //     setRadiobtn(!radiobtn);
-  //   }
-  //   console.log(sizedata, 'brand');
-  // };
-  // const checkbtn = (index) => {
-  //   let filtercatdata = filtercat;
-  //   // console.log(radiobtn);
-  //   if (filtercatdata[index].oncheck) {
-  //     filtercatdata[index].oncheck = false;
-  //     setFiltercat(filtercatdata);
-  //     setRadiobtn(!radiobtn);
-  //   } else {
-  //     filtercatdata[index].oncheck = true;
-  //     setFiltercat(filtercatdata);
-  //     setRadiobtn(!radiobtn);
-  //   }
-  //   console.log(filtercat, 'abhi');
-  // };
+  const sizefiltertogglebtn = index => {
+    let sizedata = brand;
+    // console.log(radiobtn);
+    if (sizedata[index].oncheck) {
+      sizedata[index].oncheck = false;
+      setSize(sizedata);
+      setRadiobtn(!radiobtn);
+    } else {
+      sizedata[index].oncheck = true;
+      setSize(sizedata);
+      setRadiobtn(!radiobtn);
+    }
+    console.log(sizedata, 'brand');
+  };
+  const checkbtn = (index) => {
+    let filtercatdata = filtercat;
+    // console.log(radiobtn);
+    if (filtercatdata[index].oncheck) {
+      filtercatdata[index].oncheck = false;
+      setFiltercat(filtercatdata);
+      setRadiobtn(!radiobtn);
+    } else {
+      filtercatdata[index].oncheck = true;
+      setFiltercat(filtercatdata);
+      setRadiobtn(!radiobtn);
+    }
+    console.log(filtercat, 'abhi');
+  };
 
 
   // console.log(ratingarr, 'iiii');
   useEffect(() => {
     apicall();
-    // selectfilter()
   }, []);
-  const sizefiltertogglebtn = (item)=>{
-    console.log(item,'myvalue----->>>');
-    const checkvalue = [];
-  const mydata = filtercat;
-  console.log(mydata,"newdata--->");
-  mydata.forEach(obj => checkvalue.push(...obj.data));
-  // console.log(mynewdata,"newdata--->");
- const result = {
-  checkvalue:checkvalue,
-  filterData : mydata.map(obj=>{
-    return{
-      ...obj,
-      includesBlack: checkvalue.some(item => item === item.data)
-    }
-  })
- }
- console.log(result,'myresult----->>');
-
-  } 
 
   const apicall = async () => {
     try {
@@ -139,13 +118,15 @@ const Header = () => {
       const json = await response.json();
 
       if (json.status === 1) {
-          // const myjsondata = json.data;
+        // const myjsondata = json.data;
         console.log(json.filters, '-------------')
-        console.log(json, '-------------')
         setBrand(json.brandfilter?.data)
-        setFiltercat(json.filters) 
+        setFiltercat(json.filters)
+        // 
+        // 
+
+
         setRadiobtn(!radiobtn);
-      
       } else {
         Alert.alert(res.message);
       }
@@ -155,10 +136,9 @@ const Header = () => {
     }
   };
 
-  const filtercategory = ({ item, index }) => {
-    console.log(item,'clickeditem');
-    return(
-      <>
+  const filtercategory = ({ item, index }) => (
+    // console.log(item,'ooooooo')
+    <>
       <View style={{ flexDirection: 'row', marginTop: 10 }}>
         {item.oncheck ? (
           <MaterialIcons
@@ -167,7 +147,7 @@ const Header = () => {
             color="#281E87"
             // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
 
-            onPress={() => sizefiltertogglebtn(item)}
+            onPress={() => sizefiltertogglebtn(index)}
           />
         ) : (
           <MaterialIcons
@@ -175,7 +155,7 @@ const Header = () => {
             size={22}
             color="#281E87"
             // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-            onPress={() => sizefiltertogglebtn(item)}
+            onPress={() => sizefiltertogglebtn(index)}
           />
         )}
         <View >
@@ -183,16 +163,11 @@ const Header = () => {
         </View>
       </View>
     </>
-    )
-  }
-    // console.log(item,'ooooooo')
-    
-  
+  );
 
 
   // console.log(filtercat, 'filtercat');
   const filterrendercatdata = ({ item, index }) => (
-    
     // <View><Text>{item}</Text></View>
     <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10 }}>
       {filtercat[index].oncheck ? (
@@ -202,7 +177,7 @@ const Header = () => {
           color="#281E87"
           // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
 
-          onPress={() => selectfilter(item)}
+          onPress={() => checkbtn(index, item)}
         />
       ) : (
         <MaterialIcons
@@ -210,7 +185,7 @@ const Header = () => {
           size={22}
           color="#281E87"
           // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-          onPress={() => selectfilter(index, item)}
+          onPress={() => checkbtn(index, item)}
         />
       )}
       <View>
