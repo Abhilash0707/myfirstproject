@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert, Modal, TextInput, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Alert, Modal, TextInput, ScrollView, FlatList, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -23,6 +23,12 @@ const Header = () => {
   const [brand, setBrand] = useState([]);
   const [size, setSize] = useState([]);
   const [filtercat, setFiltercat] = useState([]);
+  const [maindataarray, setDataarray] = useState([])
+  const [selectedfilterlist, setSelectedfilterlist] = useState({});
+  const [selectedFilters, setSelectedFilters] = useState({});
+
+
+
 
 
   const [ratingarr, setRatingarr] = useState([
@@ -65,20 +71,6 @@ const Header = () => {
   };
 
 
-  const sizefiltertogglebtn = index => {
-    let sizedata = brand;
-    // console.log(radiobtn);
-    if (sizedata[index].oncheck) {
-      sizedata[index].oncheck = false;
-      setSize(sizedata);
-      setRadiobtn(!radiobtn);
-    } else {
-      sizedata[index].oncheck = true;
-      setSize(sizedata);
-      setRadiobtn(!radiobtn);
-    }
-    console.log(sizedata, 'brand');
-  };
   const checkbtn = (index) => {
     let filtercatdata = filtercat;
     // console.log(radiobtn);
@@ -98,6 +90,7 @@ const Header = () => {
   // console.log(ratingarr, 'iiii');
   useEffect(() => {
     apicall();
+    console.log(maindataarray.filters, 'maindataarray');
   }, []);
 
   const apicall = async () => {
@@ -119,7 +112,12 @@ const Header = () => {
 
       if (json.status === 1) {
         // const myjsondata = json.data;
-        console.log(json.filters, '-------------')
+
+        // let dataArray = [json];
+        setDataarray(json)
+        console.log(maindataarray, 'main-------')
+        console.log(json.filters, 'sizefilter-------')
+        console.log(json.brandfilter, 'brandfilter-------')
         setBrand(json.brandfilter?.data)
         setFiltercat(json.filters)
         // 
@@ -136,34 +134,46 @@ const Header = () => {
     }
   };
 
-  const filtercategory = ({ item, index }) => (
-    // console.log(item,'ooooooo')
-    <>
-      <View style={{ flexDirection: 'row', marginTop: 10 }}>
-        {item.oncheck ? (
-          <MaterialIcons
-            name="radio-button-on"
-            size={22}
-            color="#281E87"
-            // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+  const selectmyfilters = (filterName, item) => {
+    console.log(filterName,'filtername--');
+    setSelectedFilters((pre) => {
+      //insert
+      if(!pre[filterName]){
+        pre[filterName] = [item];
+        return pre;
+      }else if (pre[filterName] && pre[filterName].indexOf(item) == -1){
+        pre = {...pre, [filterName]: [...pre[filterName], item]};
+      }else{
+        // delete
+        pre = {
+          ...pre,
+          [filterName]: pre[filterName].filter(value => value != item),
+        };
+      }
+      return pre;
+    });
+  };
 
-            onPress={() => sizefiltertogglebtn(index)}
-          />
-        ) : (
-          <MaterialIcons
-            name="radio-button-off"
-            size={22}
-            color="#281E87"
-            // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-            onPress={() => sizefiltertogglebtn(index)}
-          />
-        )}
-        <View >
-          <Text style={{ fontSize: 18, color: 'black', marginLeft: '9%' }}>{item.name}</Text>
-        </View>
-      </View>
-    </>
-  );
+
+  
+  const sizefiltertogglebtn = (index) => {
+
+    console.log('Toggle button clicked for index:', index);
+  };
+  console.log('Selected Filters:', selectedFilters);
+
+  // const filtercategory = ({ item, index }) => {
+  //   console.log(item, 'myitem==');
+  //   return (
+
+  //   )
+  // }
+
+
+
+  // console.log(item,'ooooooo')
+
+
 
 
   // console.log(filtercat, 'filtercat');
@@ -193,31 +203,31 @@ const Header = () => {
       </View>
     </View>
   )
-  const filterrendercat = ({ item, index }) => (
-    <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }} >
-      <View >
-        <Text
-          style={{
-            marginLeft: '2%',
-            fontSize: 20,
-            color: 'black',
-            fontWeight: '600',
-          }}>
-          {item.name}
-        </Text>
-      </View>
-      <View style={{ marginLeft: '2%' }} >
-        {/* <Text>hi</Text> */}
-        <FlatList
-          data={item.data}
-          renderItem={filterrendercatdata}
-          keyExtractor={(item, index) => index.toString()}
-        // style={{alignSelf: 'center'}}
-        />
-      </View>
+  // const filterrendercat = ({ item, index }) => (
+  //   <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }} >
+  //     <View >
+  //       <Text
+  //         style={{
+  //           marginLeft: '2%',
+  //           fontSize: 20,
+  //           color: 'black',
+  //           fontWeight: '600',
+  //         }}>
+  //         {item.name}
+  //       </Text>
+  //     </View>
+  //     <View style={{ marginLeft: '2%' }} >
+  //       {/* <Text>hi</Text> */}
+  //       <FlatList
+  //         data={item.data}
+  //         renderItem={filterrendercatdata}
+  //         keyExtractor={(item, index) => index.toString()}
+  //       // style={{alignSelf: 'center'}}
+  //       />
+  //     </View>
 
-    </View>
-  );
+  //   </View>
+  // );
 
   // const [logintoggle,setLogintoggle]=useState('');
   //   useEffect(() => {
@@ -286,7 +296,7 @@ const Header = () => {
   // setLogintoggle(AsyncStorage.getItem('token'));
 
   // console.log(logintoggle,'logoutttttttttt');
-  const clearfilter=()=>{
+  const clearfilter = () => {
 
   }
 
@@ -307,51 +317,51 @@ const Header = () => {
         }}>
         {/* <View style={styles.centeredView}>
           <View style={styles.modalView}> */}
-            <ScrollView>
-              <View style={styles.container}>
-                <View style={styles.headercontainer}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <AntDesign
-                      name="arrowleft"
-                      size={30}
-                      color="black"
-                      // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-                      onPress={() => SetModalVisible(!modalVisible)}
-                    />
-                    <Text style={{ marginLeft: 20, fontSize: 20, fontWeight: '800' }}>
-                      Sort & Filters
-                    </Text>
-                  </View>
+        <ScrollView>
+          <View style={styles.container}>
+            <View style={styles.headercontainer}>
+              <View style={{ flexDirection: 'row' }}>
+                <AntDesign
+                  name="arrowleft"
+                  size={30}
+                  color="black"
+                  // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+                  onPress={() => SetModalVisible(!modalVisible)}
+                />
+                <Text style={{ marginLeft: 20, fontSize: 20, fontWeight: '800' }}>
+                  Sort & Filters
+                </Text>
+              </View>
 
-                  <View
+              <View
+                style={{
+                  flexDirection: 'row',
+                  // width: '50%',
+                  // justifyContent: 'space-around',  
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity>
+                  <Text
                     style={{
-                      flexDirection: 'row',
-                      // width: '50%',
-                      // justifyContent: 'space-around',
-                      alignItems: 'center',
+                      // marginLeft: 20,
+                      fontSize: 16,
+                      fontWeight: '600',
+                      color: 'black',
                     }}>
-                    <TouchableOpacity>
-                      <Text
-                        style={{
-                          // marginLeft: 20,
-                          fontSize: 16,
-                          fontWeight: '600',
-                          color: 'black',
-                        }}>
-                        Clear Filters
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: '#EBE7E6',
-                    // height: 125,
-                    justifyContent: 'center',
-                    // borderBottomWidth: 1,
-                    padding:10
-                  }}>
-                  {/* <Text
+                    Clear Filters
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View
+              style={{
+                backgroundColor: '#EBE7E6',
+                // height: 125,
+                justifyContent: 'center',
+                // borderBottomWidth: 1,
+                padding: 10
+              }}>
+              {/* <Text
                     style={{
                       marginLeft: '2%',
                       fontSize: 18,
@@ -360,117 +370,181 @@ const Header = () => {
                     }}>
                     Sorting
                   </Text> */}
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      marginTop: 10,
-                    }}>
-                    <TouchableOpacity style={styles.modalView}>
-                      <Text style={styles.sortingprice}>Price</Text>
-                      <Text style={styles.sortingprice}>Low to High</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.modalView}>
-                      <Text style={styles.sortingprice}>Price</Text>
-                      <Text style={styles.sortingprice}>Low to HIgh</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.modalView}>
-                      <Text style={styles.sortingprice}>Ratings</Text>
-                      <Text style={styles.sortingprice}>High to low</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }}>
-                  <View>
-                    <Text
-                      style={{
-                        marginLeft: '2%',
-                        fontSize: 20,
-                        color: 'black',
-                        fontWeight: '600',
-                      }}>
-                      User ratings
-                    </Text>
-                  </View>
-
-                  <View style={{ marginTop: 10 }}>
-                    <FlatList
-                      data={ratingarr}
-                      renderItem={({ item, index }) => (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            marginLeft: '2%',
-                            marginTop: 10,
-                            //  width: 130,
-                            //  justifyContent: 'space-between',
-                            //  backgroundColor:"pink"
-                          }}>
-                          {item.oncheck ? (
-                            <MaterialIcons
-                              name="radio-button-on"
-                              size={22}
-                              color="#281E87"
-                              // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-
-                              onPress={() => toggleradiobtn(index)}
-                            />
-                          ) : (
-                            <MaterialIcons
-                              name="radio-button-off"
-                              size={22}
-                              color="#281E87"
-                              // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-                              onPress={() => toggleradiobtn(index)}
-                            />
-                          )}
-                          <View style={{ marginLeft: 10 }}>
-                            <Ratings data={item.id} />
-                          </View>
-                        </View>
-                      )}
-                      keyExtractor={(item, index) => index.toString()}
-
-                    />
-                  </View>
-                </View>
-                <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }}>
-                  <Text
-                    style={{
-                      marginLeft: '2%',
-                      fontSize: 20,
-                      color: 'black',
-                      fontWeight: '600',
-                    }}>
-                    Brand
-                  </Text>
-                  <View style={{ marginLeft: '2%', marginTop: 10, marginBottom: 10 }}>
-                    <FlatList
-                      data={brand}
-                      renderItem={filtercategory}
-                      keyExtractor={(item, index) => index.toString()}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }}>
-                  <FlatList
-                    data={filtercat}
-                    renderItem={filterrendercat}
-                    keyExtractor={(item, index) => index.toString()}
-
-                  />
-                </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  marginTop: 10,
+                }}>
+                <TouchableOpacity style={styles.modalView}>
+                  <Text style={styles.sortingprice}>Price</Text>
+                  <Text style={styles.sortingprice}>Low to High</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalView}>
+                  <Text style={styles.sortingprice}>Price</Text>
+                  <Text style={styles.sortingprice}>Low to HIgh</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalView}>
+                  <Text style={styles.sortingprice}>Ratings</Text>
+                  <Text style={styles.sortingprice}>High to low</Text>
+                </TouchableOpacity>
               </View>
-            </ScrollView>
+            </View>
+            <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }}>
+              <View>
+                <Text
+                  style={{
+                    marginLeft: '2%',
+                    fontSize: 20,
+                    color: 'black',
+                    fontWeight: '600',
+                  }}>
+                  User ratings
+                </Text>
+              </View>
 
-            <TouchableOpacity style={{backgroundColor:'orange',height:30}}
-            //  onPress={() => apicall()}
-            >
-              <Text style={{ fontSize: 18, alignSelf: 'center', fontWeight: '600',color:'white' }}>Save</Text>
-            </TouchableOpacity>
+              <View style={{ marginTop: 10 }}>
+                <FlatList
+                  data={ratingarr}
+                  renderItem={({ item, index }) => (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginLeft: '2%',
+                        marginTop: 10,
+                        //  width: 130,
+                        //  justifyContent: 'space-between',
+                        //  backgroundColor:"pink"
+                      }}>
+                      {item.oncheck ? (
+                        <MaterialIcons
+                          name="radio-button-on"
+                          size={22}
+                          color="#281E87"
+                          // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
 
-          {/* </View>
+                          onPress={() => toggleradiobtn(index)}
+                        />
+                      ) : (
+                        <MaterialIcons
+                          name="radio-button-off"
+                          size={22}
+                          color="#281E87"
+                          // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+                          onPress={() => toggleradiobtn(index)}
+                        />
+                      )}
+                      <View style={{ marginLeft: 10 }}>
+                        <Ratings data={item.id} />
+                      </View>
+                    </View>
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
+
+                />
+              </View>
+            </View>
+            <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }}>
+              <Text
+                style={{
+                  marginLeft: '2%',
+                  fontSize: 20,
+                  color: 'black',
+                  fontWeight: '600',
+                }}>
+                Brand
+              </Text>
+              <View style={{ marginLeft: '2%', marginTop: 10, marginBottom: 10 }}>
+
+                <>
+
+                  {/* <Pressable onPress={()=>{
+              selectmyfilters(item,index);
+            }} style={{ flexDirection: 'row', marginTop: 10 }}>
+              
+                  <MaterialIcons
+                  name="radio-button-on"
+                  size={22}
+                  color="#281E87"
+                   onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+                />
+              ): <MaterialIcons
+              name="radio-button-off"
+              size={22}
+              color="#281E87"
+              // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+             
+            />}
+             
+              <View>
+                <Text style={{ fontSize: 18, color: 'black', marginLeft: '9%' }}>{maindataarray.brandfilter.name}</Text>
+              </View>
+            </Pressable> */}
+
+
+                  {maindataarray?.filters.map((value) => {
+                    console.log(value, 'values---');
+                    return (
+                      <View>
+                        <Text>{value.name}</Text>
+                        <FlatList
+                          data={value.data}
+                          renderItem={({ item,index }) => (
+                            <Pressable style={{ flexDirection: 'row', marginTop: 10,padding:10,alignItems:'center',width:'95%' ,alignSelf:'center'}} onPress={() => {
+                              selectmyfilters(value.name,item);
+                            }}>
+
+                              <MaterialIcons
+                                name={
+                                  selectedFilters[value.name]?.includes(item)
+                                    ? 'radio-button-on'
+                                    : 'radio-button-off'
+                                }
+                                size={22}
+                                color="#281E87"
+                                onPress={() => sizefiltertogglebtn(index)}
+                              />
+
+
+                              <View>
+                                <Text style={{ fontSize: 18, color: 'black', marginLeft: '9%' }}>{item}</Text>
+                              </View>
+                            </Pressable>
+                          )}
+                          keyExtractor={(item, index) => index.toString()}
+
+                        />
+                      </View>
+
+                    )
+
+                  })}
+
+
+                </>
+              </View>
+            </View>
+
+            {/* <View style={{ marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#EBE7E6' }}>
+              <FlatList
+                data={filtercat}
+                renderItem={filterrendercat}
+                keyExtractor={(item, index) => index.toString()}
+
+              />
+            </View> */}
+          </View>
+        </ScrollView>
+
+        <TouchableOpacity style={{
+          backgroundColor: 'orange', padding: 10
+        }}
+        //  onPress={() => apicall()}
+        >
+          <Text style={{ fontSize: 18, alignSelf: 'center', fontWeight: '600', color: 'white' }}>save</Text>
+        </TouchableOpacity>
+
+        {/* </View>
         </View> */}
       </Modal>
       <Octicons
