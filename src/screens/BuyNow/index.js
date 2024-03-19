@@ -28,7 +28,7 @@ const BuyNow = props => {
   const [isActive, setIsActive] = useState('');
   const [param, setParam] = useState([]);
   const [paramimage, setParamimage] = useState([]);
-  console.log(props.route.params, '55555555555555555555');
+  console.log(props.route.params.id, '55555555555555555555');
   const [radiobtn, setRadiobtn] = useState(true);
   const [responsedata, setResponsedata] = useState('');
   const [productsize, setProductsize] = useState([])
@@ -67,7 +67,7 @@ const BuyNow = props => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            productId: props.route.params.item.item.id,
+            productId: props.route.params.id,
           }),
 
         },

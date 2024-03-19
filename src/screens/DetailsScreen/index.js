@@ -81,7 +81,7 @@ const Details = () => {
     <View style={{marginHorizontal: 10, marginVertical: 10}}>
       <TouchableOpacity
         onPress={() => {
-          console.log(item.id);
+          console.log(item.id,'---------------------------------------');
           navigation.navigate('Newarrival', {id: item.id, title: item.title});
           console.log(item);
         }}
@@ -161,7 +161,9 @@ const Details = () => {
       style={{
         marginHorizontal: 10,
       }}
-      onPress={()=>{navigation.navigate('BuyNow',{item:item})}}>
+      onPress={()=>{navigation.navigate('BuyNow',{id:item.id})}}
+      // onPress={()=>console.log(item.id,'-----------error')}
+      >
       <View>
         <Image
           source={{uri: item.images.small}}

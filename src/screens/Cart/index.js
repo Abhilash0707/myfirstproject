@@ -186,7 +186,7 @@ const Cart = () => {
         </View>
       </View>
       <View style={{ width: '30%', marginTop: 10 }}>
-        <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 15, color: 'black' }}>{item.item.product.product_price}</Text>
+        <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 15, color: 'black' }}>Rs. {item.item.product.product_price}</Text>
         <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 17, marginTop: 10 }}>Qty : {item.item.quantity}</Text>
         <Text style={{ alignSelf: 'flex-end', marginRight: 20, fontSize: 17, marginTop: 10, fontWeight: '800', color: 'green' }}>Rs.{ Number(item.item.quantity) * Number(item.item.product.product_price)}</Text>
       </View>

@@ -113,7 +113,7 @@ function CustomDrawerContent({navigation, ...props}) {
           fontSize: 20,
           alignSelf: 'center',
         }}
-        onPress={newarrivalnav}
+        // onPress={newarrivalnav}
       />
       {categories.length
         ? categories.map((item, index) => (
