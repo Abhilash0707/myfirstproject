@@ -18,6 +18,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Entypo from 'react-native-vector-icons/Entypo';
+// import PayUBizSdk from 'payu-non-seam-less-react';
+import { sha512 } from 'js-sha512';
+
 
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
@@ -94,15 +97,15 @@ const Cart = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            coupon_id: ''
+            coupon_id:''
           }),
 
         },
       );
 
       const json = await response.json();
-      console.log(json, 'checkout');
-      SetCheckoutdata( await response.json());
+      console.log(json.data, 'checkout');
+      SetCheckoutdata(json);
       // return(json)
 
 
@@ -146,6 +149,35 @@ const Cart = () => {
     }
     console.log(item.item.id,'deleteitem------------->>>>>...');
   };
+  const getaddressapi = async () => {
+    const storedEmployeeId = await AsyncStorage.getItem('token');
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/get-addresses',
+        {
+          method: 'post',
+          headers: {
+            Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          // body: JSON.stringify({
+          //   cart_id: item.item.id,
+          // }),
+
+        },
+      );
+      const json = await response.json();
+      console.log(json, 'Addressssss------------->>>>>...');
+      
+
+     
+    } catch (error) {
+      console.error(error)
+    } finally {
+    }
+   
+  };
 
 
   useEffect(() => {
@@ -154,6 +186,7 @@ const Cart = () => {
     }, 1000);
     apicall()
     checkout()
+    getaddressapi()
     
 
   }, []);
@@ -222,11 +255,42 @@ const Cart = () => {
    return val
     
 }
+const createPaymentParams = () => {
+  var txnid = new Date().getTime().toString();
+  // console.log('AutoSelectOtp: '+autoSelectOtp +'MerchantSmsPermission: '+merchantSMSPermission);
+  var payUPaymentParams = {
+      key: key,
+      transactionId: txnid,
+      amount: amount,
+      productInfo: productInfo,
+      firstName: firstName,
+      email: email,
+      phone: phone,
+      ios_surl: ios_surl,
+      ios_furl: ios_furl,
+      android_surl: android_surl,
+      android_furl: android_furl,
+      environment: environment,
+      userCredential: userCredential,
+      additionalParam: {
+          udf1: udf1,
+          udf2: udf2,
+          udf3: udf3,
+          udf4: udf4,
+          udf5: udf5, 
+          walletUrn:'100000'
+      }
+  }
+}
 
 
 
 
 // console.log(total,'total Price');
+const launchPayU = () => {
+  console.log('Method launched amount =' + amount);
+  PayUBizSdk.openCheckoutScreen(createPaymentParams());
+}
 
 
   return (
@@ -352,7 +416,7 @@ const Cart = () => {
         <View style={{marginLeft:'3%',marginRight:'3%'}} >
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <View><Text style={{marginLeft:10,color:'black',fontSize:17}}>price</Text></View>
-            <View><Text style={{marginRight:10,color:'black',fontSize:17}}>5000</Text></View>
+            <View><Text style={{marginRight:10,color:'black',fontSize:17}}>500</Text></View>
           </View>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <View><Text style={{marginLeft:10,color:'black',fontSize:17}}>Discount</Text></View>
