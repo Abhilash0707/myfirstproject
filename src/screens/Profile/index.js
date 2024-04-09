@@ -1,68 +1,80 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, Pressable, TextInput,Alert,ScrollView } from 'react-native'
-import { React, useState } from 'react'
-import { useNavigation } from '@react-navigation/native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Modal,
+  Pressable,
+  TextInput,
+  Alert,
+  ScrollView,
+} from 'react-native';
+import {React, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-
-
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Profile = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalVisibleorderdetails, setModalVisibleorderdetails] = useState(false);
-  const[currentpassword,SetCurrentpassword]=useState('');
-  const[newpassword,SetNewpassword]=useState('');
-  const[confirmpassword,SetConfirmpassword]=useState('');
-  const[firstname,SetFirstname]=useState('');
-  const[lastname,SetLastname]=useState('');
-  const[city,SetCity]=useState('');
-  const[address,SetAddress]=useState('');
-  const[state,SetState]=useState('');
-  const[country,SetCountry]=useState('');
-  const[pincode,SetPincode]=useState('');
-  const[mobile,SetMobile]=useState('');
+  const [modalVisibleorderdetails, setModalVisibleorderdetails] =
+    useState(false);
+  const [currentpassword, SetCurrentpassword] = useState('');
+  const [newpassword, SetNewpassword] = useState('');
+  const [confirmpassword, SetConfirmpassword] = useState('');
+  const [firstname, SetFirstname] = useState('');
+  const [lastname, SetLastname] = useState('');
+  const [city, SetCity] = useState('');
+  const [address, SetAddress] = useState('');
+  const [state, SetState] = useState('');
+  const [country, SetCountry] = useState('');
+  const [pincode, SetPincode] = useState('');
+  const [mobile, SetMobile] = useState('');
+  const [imagemodalVisible, setImageModalVisible] = useState(false);
+  const [image, setImage] = useState(null);
 
+  const [refresh, setRefresh] = useState(false);
 
   const apicall = async () => {
-      const storedEmployeeId = await AsyncStorage.getItem('token');
-      // console.log(storedEmployeeId);
-      try {
-        const response = await fetch(
-          'http://192.168.10.189/Project-4/public/api/update-password',
-          {
-            method: 'post',
-            headers: {
-              Authorization: `Bearer ${storedEmployeeId}`,
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              old_password:currentpassword,
-              password:newpassword,
-              password_confirmation:confirmpassword,
-              
-            }),
-
+    const storedEmployeeId = await AsyncStorage.getItem('token');
+    // console.log(storedEmployeeId);
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/update-password',
+        {
+          method: 'post',
+          headers: {
+            Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
-        );
-       
-        // const respo=await response.json();
-        console.log(await response.json());
-      } catch (error) {
-        console.error(error)
-      } finally {
-      }
-      setModalVisible(!modalVisible)
-      SetCurrentpassword('')
-      SetNewpassword('')
-      SetConfirmpassword('')
-    };
-   
+          body: JSON.stringify({
+            old_password: currentpassword,
+            password: newpassword,
+            password_confirmation: confirmpassword,
+          }),
+        },
+      );
+
+      // const respo=await response.json();
+      console.log(await response.json());
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+    setModalVisible(!modalVisible);
+    SetCurrentpassword('');
+    SetNewpassword('');
+    SetConfirmpassword('');
+  };
+
   const logintoggle = () => {
     // navigation.navigate("login")
     Alert.alert(
@@ -71,7 +83,7 @@ const Profile = () => {
       [
         {
           text: 'Ask me later',
-          onPress: () => console.log('Ask me later pressed')
+          onPress: () => console.log('Ask me later pressed'),
         },
         {
           text: 'Cancel',
@@ -95,21 +107,19 @@ const Profile = () => {
                   // body: JSON.stringify({
                   //   productId: props.route.params.item.item.id,
                   // }),
-
                 },
               );
-              navigation.navigate('login')
+              navigation.navigate('login');
             } catch (error) {
-              console.error(error)
+              console.error(error);
             } finally {
             }
-          }
+          },
         },
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
-
-  }
+  };
   const billing_address_apicall = async () => {
     const storedEmployeeId = await AsyncStorage.getItem('token');
     // console.log(storedEmployeeId);
@@ -124,44 +134,96 @@ const Profile = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            first_name:firstname,
-            last_name:lastname,
-            city:city,
-            address:address,
-            state:state,
-            country:country,
-            pincode:pincode,
-            mobile:mobile
-
-            
+            first_name: firstname,
+            last_name: lastname,
+            city: city,
+            address: address,
+            state: state,
+            country: country,
+            pincode: pincode,
+            mobile: mobile,
           }),
-
         },
       );
-     
-      
-      console.log(await response.json())
+
+      console.log(await response.json());
       // const respo=await response.json()
       // Alert.alert(await response.json() );
       // console.log(respo)
-   
-    
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
     }
-    
-    setModalVisibleorderdetails(!modalVisibleorderdetails)
-    SetFirstname('')
-    SetLastname('')
-    SetCity('')
-    SetAddress('')
-    SetState('')
-    SetCountry('')
-    SetPincode('')
-    SetMobile('')
+
+    setModalVisibleorderdetails(!modalVisibleorderdetails);
+    SetFirstname('');
+    SetLastname('');
+    SetCity('');
+    SetAddress('');
+    SetState('');
+    SetCountry('');
+    SetPincode('');
+    SetMobile('');
   };
- 
+  const openCamera = async () => {
+    console.log('open_camera');
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+      quality: 0,
+    };
+    launchCamera(options, response => {
+      console.log(response, 'image_response');
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        setImageModalVisible(false);
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+        setModalVisible(false);
+      } else {
+        let imageUri = response.assets?.[0]?.uri;
+        console.log(response);
+        console.log(imageUri, 'Abhilash');
+        setImage(imageUri);
+        setRefresh(!refresh);
+        setImageModalVisible(false);
+      }
+    });
+  };
+  const openGallery = async () => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+      quality: 0,
+    };
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        setModalVisible(false);
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+        setModalVisible(false);
+      } else {
+        // console.log(response.assets?.[0]?.uri,'image_url');
+        let imageUri = response.assets?.[0]?.uri;
+        console.log(imageUri, 'Abhilash');
+        setRefresh(!refresh);
+        setModalVisible(false);
+        setImage(imageUri);
+        setImageModalVisible(false);
+      }
+    });
+  };
+  const handleModalClose = () => {
+    setImageModalVisible(false);
+  };
+  const handleButtonPress = () => {
+    setImageModalVisible(true);
+  };
 
   return (
     <View style={styles.conatiner}>
@@ -173,8 +235,11 @@ const Profile = () => {
           // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
           onPress={() => navigation.goBack()}
         />
-        <View style={{ marginLeft: 20 }}><Text style={{ fontSize: 20, color: 'black', fontWeight: '600' }}>Profile</Text></View>
-
+        <View style={{marginLeft: 20}}>
+          <Text style={{fontSize: 22, color: 'black', fontWeight: '400'}}>
+            Profile
+          </Text>
+        </View>
       </View>
       <Modal
         animationType="slide"
@@ -186,31 +251,44 @@ const Profile = () => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+          <Entypo
+                name="squared-cross"
+                size={26}
+                color="black"
+                // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+                onPress={() =>
+                  // setModalVisibleorderdetails(!modalVisibleorderdetails)
+                  setModalVisible(false)
+                }
+                style={{alignSelf: 'flex-end'}}
+              />
             <Text style={styles.modalText}>CURRENT PASSWORD</Text>
             <TextInput
-            value={currentpassword}
-            style={styles.cart1}
-            onChangeText={text => SetCurrentpassword(text)}
-          />
-             <Text style={styles.modalText}> NEW PASSWORD</Text>
-             <TextInput
-            value={newpassword}
-            style={styles.cart1}
-            onChangeText={text => SetNewpassword(text)}
-          />
-             <Text style={styles.modalText}> CONFIRM PASSWORD</Text>
-             <TextInput
-            value={confirmpassword}
-            style={styles.cart1}
-            onChangeText={text => SetConfirmpassword(text)}
-          />
+              value={currentpassword}
+              style={styles.cart1}
+              onChangeText={text => SetCurrentpassword(text)}
+            />
+            <Text style={styles.modalText}> NEW PASSWORD</Text>
+            <TextInput
+              value={newpassword}
+              style={styles.cart1}
+              onChangeText={text => SetNewpassword(text)}
+            />
+            <Text style={styles.modalText}> CONFIRM PASSWORD</Text>
+            <TextInput
+              value={confirmpassword}
+              style={styles.cart1}
+              onChangeText={text => SetConfirmpassword(text)}
+            />
 
-          <TouchableOpacity style={styles.savebutton} 
-           onPress={() => apicall()}
-          >
-            <Text style={{fontSize:18,alignSelf:'center',fontWeight:'600'}}>Save</Text>
-          </TouchableOpacity>
-           
+            <TouchableOpacity
+              style={styles.savebutton}
+              onPress={() => apicall()}>
+              <Text
+                style={{fontSize: 20, alignSelf: 'center', fontWeight: '600',justifyContent:'center',color:'black'}}>
+                Save
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -222,138 +300,233 @@ const Profile = () => {
           // Alert.alert('Modal has been closed.');
           setModalVisibleorderdetails(!modalVisibleorderdetails);
         }}>
-          <ScrollView>
+        <ScrollView>
           <View style={styles.centeredView}>
-          <View style={styles.modalView1}>
-          <Entypo
-          name="squared-cross"
-          size={30}
-          color="black"
-          // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-          onPress={() =>setModalVisibleorderdetails(!modalVisibleorderdetails)}
-          style={{alignSelf:'flex-end'}}
-        />
-            <Text style={styles.modalText}>FIRST NAME</Text>
-            <TextInput
-            value={firstname}
-            style={styles.cart1}
-            onChangeText={text => SetFirstname(text)}
-          />
-           <Text style={styles.modalText}>LAST NAME</Text>
-            <TextInput
-            value={lastname}
-            style={styles.cart1}
-            onChangeText={text => SetLastname(text)}
-          />
-             <Text style={styles.modalText}> CITY</Text>
-             <TextInput
-            value={city}
-            style={styles.cart1}
-            onChangeText={text => SetCity(text)}
-          />
-             <Text style={styles.modalText}> ADDRESS</Text>
-             <TextInput
-            value={address}
-            style={styles.cart1}
-            onChangeText={text => SetAddress(text)}
-            multiline={true}
-          />
-           <Text style={styles.modalText}>STATE</Text>
-             <TextInput
-            value={state}
-            style={styles.cart1}
-            onChangeText={text => SetState(text)}
-          />
-           <Text style={styles.modalText}>COUNTRY</Text>
-             <TextInput
-            value={country}
-            style={styles.cart1}
-            onChangeText={text => SetCountry(text)}
-          />
-          <Text style={styles.modalText}>PINCODE</Text>
-             <TextInput
-            value={pincode}
-            style={styles.cart1}
-            onChangeText={text => SetPincode(text)}
-            keyboardType='numeric'
-            maxLength={6}
-          />
-           <Text style={styles.modalText}>MOBILE</Text>
-             <TextInput
-            value={mobile}
-            style={styles.cart1}
-            onChangeText={text => SetMobile(text)}
-            keyboardType='numeric'
-            maxLength={10}
-            
-          />
+            <View style={styles.modalView1}>
+              <Entypo
+                name="squared-cross"
+                size={30}
+                color="black"
+                // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+                onPress={() =>
+                  setModalVisibleorderdetails(!modalVisibleorderdetails)
+                }
+                style={{alignSelf: 'flex-end'}}
+              />
+              <Text style={styles.modalText}>FIRST NAME</Text>
+              <TextInput
+                value={firstname}
+                style={styles.cart1}
+                onChangeText={text => SetFirstname(text)}
+              />
+              <Text style={styles.modalText}>LAST NAME</Text>
+              <TextInput
+                value={lastname}
+                style={styles.cart1}
+                onChangeText={text => SetLastname(text)}
+              />
+              <Text style={styles.modalText}> CITY</Text>
+              <TextInput
+                value={city}
+                style={styles.cart1}
+                onChangeText={text => SetCity(text)}
+              />
+              <Text style={styles.modalText}> ADDRESS</Text>
+              <TextInput
+                value={address}
+                style={styles.cart1}
+                onChangeText={text => SetAddress(text)}
+                multiline={true}
+              />
+              <Text style={styles.modalText}>STATE</Text>
+              <TextInput
+                value={state}
+                style={styles.cart1}
+                onChangeText={text => SetState(text)}
+              />
+              <Text style={styles.modalText}>COUNTRY</Text>
+              <TextInput
+                value={country}
+                style={styles.cart1}
+                onChangeText={text => SetCountry(text)}
+              />
+              <Text style={styles.modalText}>PINCODE</Text>
+              <TextInput
+                value={pincode}
+                style={styles.cart1}
+                onChangeText={text => SetPincode(text)}
+                keyboardType="numeric"
+                maxLength={6}
+              />
+              <Text style={styles.modalText}>MOBILE</Text>
+              <TextInput
+                value={mobile}
+                style={styles.cart1}
+                onChangeText={text => SetMobile(text)}
+                keyboardType="numeric"
+                maxLength={10}
+              />
 
-          <TouchableOpacity style={styles.savebutton1} 
-           onPress={() =>billing_address_apicall()}>
-            <Text style={{fontSize:22,alignSelf:'center',fontWeight:'600'}}>Save</Text>
-          </TouchableOpacity>
-           
+              <TouchableOpacity
+                style={styles.savebutton}
+                onPress={() => billing_address_apicall()}>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    alignSelf: 'center',
+                    fontWeight: '600',
+                    color:'black'
+                  }}>
+                  Save
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={imagemodalVisible}
+        // onRequestClose={handleModalClose}
+      >
+        <View style={styles.centeredViewimage}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Choose an option:</Text>
+
+            <Entypo
+              name="circle-with-cross"
+              size={24}
+              color="black"
+              style={{
+                alignSelf: 'center',
+              }}
+              onPress={handleModalClose}
+            />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                onPress={() => openCamera()}
+                style={styles.modalButton}>
+                {/* <Text style={styles.buttonText}>Open Gallery</Text> */}
+
+                <Entypo
+                  name="camera"
+                  size={40}
+                  color="#848A86"
+                  style={{
+                    alignSelf: 'center',
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => openGallery()}
+                style={styles.modalButton}>
+                {/* <Text style={styles.buttonText}>Open Camera</Text> */}
+
+                <MaterialCommunityIcons
+                  name="view-gallery-outline"
+                  size={40}
+                  color="#848A86"
+                  style={{
+                    alignSelf: 'center',
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+            {/* <TouchableOpacity
+              onPress={handleModalClose}
+              style={styles.closeButton}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity> */}
           </View>
         </View>
-          </ScrollView>
-      
       </Modal>
 
-
-      <View>
-        <Image
+      <TouchableOpacity onPress={handleButtonPress}>
+        {/* <Image
           style={{ height: 120, width: 120, marginTop: 40, borderRadius: 120, alignSelf: 'center' }}
           // source={require('')}
           source={require('../../Assects/Images/profile.png')}
-        />
-      </View>
-      <Text style={{ alignSelf: 'center', marginTop: 20, fontSize: 22, fontWeight: '600' }}>Abhilash Mohanty</Text>
-      <TouchableOpacity style={styles.cart1}
-        onPress={() => setModalVisible(!modalVisible)} >
+        /> */}
+        {image ? (
+          // <Image source={image} style={styles.image} />
+          <Image source={{uri: image}}  style={{
+            height: 120,
+            width: 120,
+            marginTop: 40,
+            borderRadius: 120,
+            alignSelf: 'center',
+          }} />
+        ) : (
+          <Image
+            style={{
+              height: 120,
+              width: 120,
+              marginTop: 40,
+              borderRadius: 120,
+              alignSelf: 'center',
+            }}
+            // source={require('')}
+            source={require('../../Assects/Images/profile.png')}
+          />
+        )}
+      </TouchableOpacity>
+      <Text
+        style={{
+          alignSelf: 'center',
+          marginTop: 20,
+          fontSize: 22,
+          fontWeight: '600',
+        }}>
+        Abhilash Mohanty
+      </Text>
+      <TouchableOpacity
+        style={styles.cart1}
+        onPress={() => setModalVisible(!modalVisible)}>
         <MaterialIcons
           name="password"
           size={28}
-        // color="black"
-        // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-
+          // color="black"
+          // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
         />
 
-        <Text style={{ fontSize: 20, fontWeight: '500', marginLeft: 20 }}>CHANGE PASSWORD</Text>
-
+        <Text style={{fontSize: 20, fontWeight: '500', marginLeft: 20}}>
+          CHANGE PASSWORD
+        </Text>
       </TouchableOpacity>
-      <View  >
-      <TouchableOpacity style={styles.cart1}
-        onPress={() => setModalVisibleorderdetails(!modalVisibleorderdetails)}
-         >
-        <FontAwesome
-          name="first-order"
-          size={28}
-        // color="black"
-        // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+      <View>
+        <TouchableOpacity
+          style={styles.cart1}
+          onPress={() =>
+            setModalVisibleorderdetails(!modalVisibleorderdetails)
+          }>
+          <FontAwesome
+            name="first-order"
+            size={28}
+            // color="black"
+            // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+          />
 
-        />
-
-        <Text style={{ fontSize: 20, fontWeight: '500', marginLeft: 20 }}>BILLING ADDRESS</Text>
-
-      </TouchableOpacity>
+          <Text style={{fontSize: 20, fontWeight: '500', marginLeft: 20}}>
+            BILLING ADDRESS
+          </Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.cart1} ></View>
-      <View style={styles.cart1} ></View>
+      <View style={styles.cart1}></View>
+      <View style={styles.cart1}></View>
       {/* <View style={styles.cart1} ></View> */}
-      <TouchableOpacity style={styles.addtocart}
-        onPress={() => logintoggle()}
-      >
+      <TouchableOpacity style={styles.addtocart} onPress={() => logintoggle()}>
         <Text style={styles.addtocarttext}>LOGOUT</Text>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
 
 const styles = StyleSheet.create({
   conatiner: {
-    flex: 1
+    flex: 1,
   },
   headercontainer: {
     flexDirection: 'row',
@@ -365,7 +538,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     // marginTop: 10,
     fontWeight: 'bold',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   Popularimg: {
     height: 350,
@@ -390,7 +563,7 @@ const styles = StyleSheet.create({
     // borderWidth:1,
     height: 50,
     alignItems: 'center',
-    justifyContent: "center"
+    justifyContent: 'center',
   },
   addtocart: {
     width: '40%',
@@ -400,7 +573,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1.5,
     borderColor: 'white',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   addtocarttext: {
     alignSelf: 'center',
@@ -414,9 +587,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // marginTop: 22,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // backgroundColor: 'red',
     // opacity:.1
     // transparent:true,
-
   },
   modalView: {
     margin: 20,
@@ -432,7 +605,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "80%",
+    width: '90%',
     // height: "45%"
   },
   button: {
@@ -445,7 +618,7 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: '#2196F3',
-    marginTop:15
+    marginTop: 15,
   },
   textStyle: {
     color: 'white',
@@ -455,41 +628,42 @@ const styles = StyleSheet.create({
   modalText: {
     // marginBottom: 15,
     textAlign: 'center',
-    fontSize:18,
-    color:'black',
+    fontSize: 18,
+    color: 'black',
     // margin:5,
-    fontWeight:'600'
+    fontWeight: '600',
   },
   input: {
     height: 40,
     // margin: 12,
     borderWidth: 1,
     // padding: 10,
-    width:'100%',
-    borderRadius:10,
-    marginTop:12,
+    width: '100%',
+    borderRadius: 10,
+    marginTop: 12,
     // borderBottomWidth:2
-    marginBottom:10
+    marginBottom: 10,
   },
-  savebutton:{
-    width:'40%',
-    borderWidth:1,
+  savebutton: {
+    width: '50%',
+    // borderWidth: 1,
     // padding:10,
-    height:30,
-    elevation:2,
-    shadowOffset:0.1
-
+    justifyContent:"center",
+    height: 35,
+    // elevation: 2,
+    // shadowOffset: 0.1,
+    backgroundColor:'#FF5900'
+   
   },
-  savebutton1:{
-    width:'60%',
-    borderWidth:1,
+  savebutton1: {
+    width: '60%',
+    borderWidth: 1,
     // padding:10,
-    height:40,
-    elevation:2,
+    height: 40,
+    elevation: 2,
     // shadowOffset:0.1,
-    justifyContent:'center',
-    marginTop:11
-
+    justifyContent: 'center',
+    marginTop: 11,
   },
   modalView1: {
     // margin: 20,
@@ -505,8 +679,54 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     // flex:1
   },
-})
+  modalContent: {
+    backgroundColor: '#6583B7',
+    // padding: 20,
+    borderRadius: 8,
+    width: '80%',
+    alignSelf: 'center',
+    justifyContent: 'space-around',
+    marginTop: 90,
+    height: 200,
+    // alignItems: 'space-around',
+  },
+  modalText: {
+    fontSize: 18,
+    // marginBottom: 16,
+    alignSelf: 'center',
+    // fontSize: 22,
+    fontWeight: '600',
+    color: 'black',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    // marginBottom: 16,
+  },
+  modalButton: {
+    backgroundColor: 'lightgrey',
+    // padding: 12,
+    // borderRadius: 8,
+    width: 90,
+    height: 90,
+    borderRadius: 90,
+    // alignItems: 'center',
+    justifyContent: 'center',
+    // alignSelf: 'center',
+    borderWidth: 3,
+    borderColor: 'white',
+    marginBottom: 20,
+  },
+  centeredViewimage:{
+    flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // marginTop: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+
+  }
+});

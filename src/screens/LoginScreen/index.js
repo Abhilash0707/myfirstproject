@@ -6,12 +6,16 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
+  Dimensions,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 // import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {black} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import Toast from 'react-native-toast-message';
 
 // const employeeData = [
 //   {id: '001', password: 'password1'},
@@ -29,12 +33,12 @@ const Login = () => {
   const showToasterror = () => {
     Toast.show({
       type: 'error',
-      text1: 'Please Fill the required fields correctly',
+      text1: 'Please Fill the required Credentials correctly',
       // text2: "And should not less than 7 char",
 
       visibilityTime: 2000,
     });
-    // console.log("hello");
+    console.log('hello');
   };
 
   // const validateLogin = () => {
@@ -55,155 +59,187 @@ const Login = () => {
   // };
   useEffect(() => {
     // Check if employee ID is already stored in AsyncStorage
-    retrieveEmployeeId()
+    retrieveEmployeeId();
     // apicall()
-    // console.log(token,'ttkkn');
+    // console.log(token,'ttkkn')
   }, []);
 
   const retrieveEmployeeId = async () => {
     try {
       const storedEmployeeId = await AsyncStorage.getItem('token');
-      console.log(storedEmployeeId,'ttkn abhi');
+      console.log(storedEmployeeId, 'ttkn abhi');
       if (storedEmployeeId != null) {
         // If employee ID is found, navigate to the other screen
         navigation.navigate('Drawernav');
         // Alert.alert('Token Retrived')
-      }else{
+      } else {
         // Alert.alert('Null Token')
-
       }
     } catch (error) {
       console.error('Error retrieving Token:', error);
     }
   };
   const handleLogin = async () => {
-
-  
-      try {
-       
-        const response = await fetch(
-          'http://192.168.10.189/Project-4/public/api/auth/login',
-          {
-            method: 'post',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-
-              email:email,
-              password:password,
-              requestType: 'mobile'
-              
-            }),
-         
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/auth/login',
+        {
+          method: 'post',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
-        );
-  
-        const json = await response.json();
-        // console.log(json,'jsonnnnn');
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            requestType: 'mobile',
+          }),
+        },
+      );
+
+      const json = await response.json();
+      // console.log(json,'jsonnnnn');
       //  setToken(json.access_token)
-      //  console.log(token);
-        
-        
-  
-        if (json.status === 1) {
-         
-          console.log(json,"lll");
-          console.log(json.access_token,'token');
-          
-          
-           let asynctoken = await AsyncStorage.setItem('token',json.access_token);
-           
-          navigation.navigate('Drawernav');
-          console.log( asynctoken,'asynctoken--------------');
-  
-  
-      
-        
-        } else {
-          // Alert.alert(json.message)
-          Alert.alert('denied');
-        }
-      } catch (error) {
-        console.error('Error storing Tokan:', error);
-        
-      }
-    }
+      //  console.log(token)
+
+      if (json.status === 1) {
+        console.log(json, 'lll');
+        console.log(json.access_token, 'token');
    
- 
+
+        let asynctoken = await AsyncStorage.setItem('token', json.access_token);
+
+        navigation.navigate('Drawernav');
+        console.log(asynctoken, 'asynctoken--------------');
+        setEmail('');
+        setPassword('');
+      } else {
+        // Alert.alert(json.message)
+        // Alert.alert('denied');
+        showToasterror();
+      }
+    } catch (error) {
+      console.error('Error storing Tokan:', error);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={['#80ADEA', '#7DD156']}
-        start={{x: 0, y: 0.5}}
-        end={{x: 1, y: 0.5}}
-        style={styles.gradient}>
+    <KeyboardAvoidingView>
+      <View style={styles.container}>
         {/* <Toast /> */}
-        <Image
-          style={{
-            height: 150,
-            width: '78%',
-            alignSelf: 'center',
-            // marginBottom: 15,
-            // marginRight: 20,
-            alignSelf: 'center',
-            marginTop: 70,
-          }}
-          resizeMode="contain"
-          source={require('../../Assects/Images/logonew.png')}
-        />
-        <View style={{marginTop: 60}}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={text => setEmail(text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={text => setPassword(text)}
-          />
-
-          <TouchableOpacity
-            onPress={handleLogin}
+        <View style={{flex: 1, alignSelf: 'center'}}>
+          <Image
             style={{
-              backgroundColor: '#7DD156',
-              width: '35%',
+              height: 550,
+              width: 450,
               alignSelf: 'center',
-              marginTop: 30,
-              borderRadius: 7,
-              height: 40,
-              justifyContent: 'center',
-              borderWidth: 1,
-              borderColor: 'black',
-              borderBottomWidth: 2,
-            }}>
+              // marginBottom: 15,
+              // marginRight: 20,
+              // alignSelf: 'center',
+              // marginTop: 70,
+              borderBottomLeftRadius: 60,
+              borderBottomRightRadius: 60,
+              // borderRadius:50,
+              // borderWidth:2,
+              // borderColor:'black'
+            }}
+            // resizeMode="stretch"
+            source={require('../../Assects/Images/hangers.jpg')}
+          />
+        </View>
+        <View style={styles.modalView}>
+          <View style={{marginBottom: 40}}>
             <Text
               style={{
                 fontStyle: 'italic',
-                fontWeight: '800',
-                fontSize: 20,
+                fontWeight: '600',
+                fontSize: 35,
+                alignSelf: 'center',
+                color: '#FF5900',
+              }}>
+              Dafodill
+            </Text>
+            <Text
+              style={{
+                fontStyle: 'italic',
+                fontWeight: '500',
+                fontSize: 18,
                 alignSelf: 'center',
                 color: 'black',
               }}>
-              LOGIN
+              Your Urban Classic Store
             </Text>
-          </TouchableOpacity>
-          <View style={{flexDirection:'row',alignSelf:'center',marginTop:10}}>
-            <Text style={{color:'black',fontWeight:'bold',fontSize:16}}>Don't have an account?</Text>
-            <TouchableOpacity>
-            <Text style={{color:'blue',fontWeight:'bold',fontSize:18}} onPress={()=>(navigation.navigate('signup'))}> Sign Up</Text>
+          </View>
+          <View>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={text => setEmail(text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry
+              value={password}
+              onChangeText={text => setPassword(text)}
+            />
+
+            <TouchableOpacity
+              onPress={handleLogin}
+              style={{
+                backgroundColor: '#FF5900',
+                width: '70%',
+                alignSelf: 'center',
+                marginTop: 30,
+                borderRadius: 7,
+                height: 40,
+                justifyContent: 'center',
+                // borderWidth: 1,
+                // borderColor: 'black',
+                // borderBottomWidth: 2,
+              }}>
+              <Text
+                style={{
+                  // fontStyle: 'italic',
+                  fontWeight: '500',
+                  fontSize: 18,
+                  alignSelf: 'center',
+                  color: 'black',
+                }}>
+                LOGIN
+              </Text>
             </TouchableOpacity>
-            
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'center',
+                marginTop: 10,
+              }}>
+              <Text style={{color: 'black', fontWeight: '600', fontSize: 16}}>
+                Don't have an account?
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={{color: '#FF5900', fontWeight: '500', fontSize: 19}}
+                  onPress={() => navigation.navigate('signup')}>
+                  {' '}
+                  Sign Up here!
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </LinearGradient>
-    </View>
+
+        {/* <LinearGradient
+        colors={['#80ADEA', '#7DD156']}
+        start={{x: 0, y: 0.5}}
+        end={{x: 1, y: 0.5}}
+        style={styles.gradient}> */}
+
+        {/* </LinearGradient> */}
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -211,7 +247,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
   },
   gradient: {
     flex: 1,
@@ -219,7 +255,7 @@ const styles = StyleSheet.create({
   input: {
     height: 44,
     borderColor: 'gray',
-    borderWidth: 2,
+    // borderWidth: 2,
     marginBottom: 12,
     paddingHorizontal: 8,
     width: '70%',
@@ -227,7 +263,29 @@ const styles = StyleSheet.create({
     borderColor: 'orange',
     borderRadius: 7,
     backgroundColor: 'white',
-    fontWeight: '800',
+    fontWeight: '600',
     fontSize: 16,
+    backgroundColor: '#E4E2E1',
+  },
+  modalView: {
+    // margin: 20,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    width: 400,
+    // height: 400,
+    justifyContent: 'center',
+    // padding: 35,
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    // shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 1,
+    top: Dimensions.get('window').height / 2 - 50,
   },
 });

@@ -7,10 +7,11 @@ import {
   View,
   Pressable,
   ScrollView,
-  Alert
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
+import Toast from 'react-native-toast-message';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -48,20 +49,18 @@ const Signup = () => {
               mobile: mobile,
               password: password,
               password_confirmation: confirmpassword,
-              
-              
             }),
           },
         );
         const json = await response.json();
-      
+
         console.log(json);
-    
-        SetName('')
-        SetEmail('')
-        SetMobile('')
-        SetPassword('')
-        SetconfirmPassword('')
+
+        SetName('');
+        SetEmail('');
+        SetMobile('');
+        SetPassword('');
+        SetconfirmPassword('');
         //   if (json.status === 1) {
         //     Alert.alert('login Sucess');
         //     console.log(json);
@@ -76,13 +75,23 @@ const Signup = () => {
         // storeEmployeeId(token);
       }
     } else {
-      Alert.alert('fill All the requirements');
+      showToasterror()
     }
   };
+  const showToasterror = () => {
+    Toast.show({
+      type: 'error',
+      text1: 'Please Fill the required Credentials correctly',
+      // text2: "And should not less than 7 char",
+
+      visibilityTime: 2000,
+    });
+    console.log("hello");
+  };
+
   // useEffect(() => {
   //   apicall();
   // }, []);
-
 
   // const apicall=async()=>{
 
@@ -104,8 +113,9 @@ const Signup = () => {
 
   // }
   return (
-    <ScrollView style={styles.container}>
-      <View >
+    
+      <View style={styles.container}>
+        <View style={{top:60}}>
         <View style={styles.logincontainer}>
           <Text style={styles.text1}>Welcome To Sign Up</Text>
           <Text style={styles.text1a}>Fill out this Form to Sign up</Text>
@@ -159,34 +169,33 @@ const Signup = () => {
           />
 
           <View style={styles.btnview}>
-            <TouchableOpacity
-              onPress={handleSignin}
-              style={styles.mybutton}>
+            <TouchableOpacity onPress={handleSignin} style={styles.mybutton}>
               <Text
                 style={{
                   fontSize: 20,
                   // fontFamily: 'bold',
                   textAlign: 'center',
-                  color: 'white',
+                  color: 'black',
+                  fontWeight:'500'
                 }}>
                 Sign up
               </Text>
             </TouchableOpacity>
-            <View style={{marginTop: 40, flexDirection: 'row'}}>
-              <Text>Already have an account?</Text>
+            <View style={{flexDirection:'row',marginTop:10}} >
+              <Text style={{fontSize: 18, color: 'black',fontWeight:'400'}}>
+                Already have an account?
+              </Text>
               <TouchableOpacity onPress={() => navigation.navigate('login')}>
-                <Text style={styles.loginbtn}>Login here</Text>
-              </TouchableOpacity>
-
-              {/* <Text>Already have an account?
-                <TouchableOpacity ><Text >Login</Text></TouchableOpacity>
-                here
-            </Text> */}
+              <Text style={styles.loginbtn}>  Login a here</Text>
+            </TouchableOpacity>
             </View>
+            
           </View>
         </View>
+        </View>
+       
       </View>
-    </ScrollView>
+   
   );
 };
 
@@ -195,10 +204,12 @@ const styles = StyleSheet.create({
     flex: 1,
 
     backgroundColor: 'white',
+   
   },
   logincontainer: {
     // marginTop: 60
     marginLeft: '5%',
+    
   },
 
   container1: {
@@ -237,11 +248,11 @@ const styles = StyleSheet.create({
     color: 'black',
     // fontFamily: 'bold',
     // marginLeft: '20%',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   mybutton: {
     // fontSize:50,
-    backgroundColor: '#6C88E7',
+    backgroundColor: '#FF5900',
     // borderColor: '#2F8C78',
     borderRadius: 5,
     // borderWidth: 2,
@@ -265,8 +276,24 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   loginbtn: {
-    color: '#6C88E7',
-    fontSize: 14,
+    color: '#FF5900',
+    fontSize: 20,
+    fontWeight:'500'
+  },
+  input: {
+    height: 44,
+    borderColor: 'gray',
+    // borderWidth: 2,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+    width: '70%',
+    alignSelf: 'center',
+    borderColor: 'orange',
+    borderRadius: 7,
+    backgroundColor: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+    backgroundColor: '#E4E2E1',
   },
 });
 

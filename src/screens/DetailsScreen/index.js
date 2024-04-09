@@ -170,14 +170,14 @@ const Details = () => {
           style={{width: 80, height: 80, alignSelf: 'center'}}
         />
       </View>
-      <Text style={{color: 'black', fontWeight: '800'}}>
+      <Text style={{color: 'black', fontWeight: '600'}}>
         {item.product_name}
       </Text>
       <View style={{flexDirection: 'row'}}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>Price</Text>
-        <Text style={{color: 'black', fontSize: 16, fontWeight: '500'}}>
+        <Text style={{color: 'black', fontSize: 17, fontWeight: '400'}}>
           {' '}
-          ${item.product_price}
+          Rs.{item.product_price}
         </Text>
       </View>
     </TouchableOpacity>
@@ -217,9 +217,9 @@ const Details = () => {
   // );
 
   const allproductflatlist = ({item, index}) => (
-    <View style={{alignItems: 'center', marginLeft: 0, width: '44%'}}>
+    <View style={{alignItems: 'center', marginLeft: 0, width: '44%',alignSelf:'center'}}>
       <View style={styles.NewArrivalproduct}>
-        {liked ? (
+        {/* {liked ? (
           <View
             style={{
               alignSelf: 'flex-end',
@@ -269,7 +269,7 @@ const Details = () => {
               }}
             />
           </View>
-        )}
+        )} */}
 
         <TouchableOpacity>
           <Image
@@ -286,7 +286,7 @@ const Details = () => {
               //  color: 'black',
               fontSize: 18,
               margin: '2%',
-              fontWeight: '500',
+              fontWeight: '600',
             }}>
             {item.product_name}
           </Text>
@@ -300,7 +300,7 @@ const Details = () => {
               marginRight: 15,
               fontWeight: '600',
             }}>
-            ${item.product_price}
+            Rs.{item.product_price}
           </Text>
         </View>
       </View>
@@ -357,6 +357,7 @@ const Details = () => {
             width: '100%',
             borderBottomWidth: 1,
             borderBottomColor: 'gray',
+            // backgroundColor:'red'
           }}>
           <FlatList
             horizontal
@@ -403,7 +404,7 @@ const Details = () => {
             borderBottomColor: 'gray',
             paddingBottom: 10,
           }}>
-          <Text style={{fontWeight: 'bold', fontSize: 24, color: 'black'}}>
+          <Text style={{fontWeight: '800', fontSize: 24, color: 'black'}}>
             Shop By Deals
           </Text>
           <Text
@@ -418,13 +419,13 @@ const Details = () => {
         </View>
 
         <View style={{marginTop: 10}}>
-          <View style={{alignItems: 'center', marginTop: 15}}>
+          <View style={{ marginTop: 15,marginLeft:10,marginBottom:10}}>
             <Text
               style={{
-                fontWeight: 'bold',
+                fontWeight: '500',
                 fontSize: 24,
                 color: 'black',
-                textDecorationLine: 'underline',
+                // textDecorationLine: 'underline',
               }}>
               {''}New Arrivals
             </Text>
@@ -440,12 +441,12 @@ const Details = () => {
         </View> 
 
         <View style={{marginTop: 20}}>
-          <View style={{alignItems: 'center', marginTop: 15}}>
-            <Text style={{fontWeight: '700', fontSize: 28, color: 'black',textDecorationLine:'underline'}}>
+          <View style={{ marginTop: 15,marginLeft:10}}>
+            <Text style={{fontWeight: '700', fontSize: 28, color: 'black',marginBottom:10}}>
               All Products
             </Text>
           </View>
-          <View style={{justifyContent: 'space-around'}}>
+          <View style={{justifyContent: 'space-around',alignItems:"center"}}>
             <FlatList
               // horizontal
               // contentContainerStyle={{gap: 10}}

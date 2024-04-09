@@ -251,6 +251,7 @@ const Header = () => {
                 },
               );
               navigation.navigate('login')
+              await AsyncStorage.removeItem('token')
             } catch (error) {
               console.error(error)
             } finally {

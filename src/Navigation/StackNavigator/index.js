@@ -15,14 +15,6 @@ import Listing from '../../screens/Listingpage';
 
 
 
-
-
-
-
-
-
-
-
 const StackNav = () => {
     const Stack = createNativeStackNavigator();
     return (
