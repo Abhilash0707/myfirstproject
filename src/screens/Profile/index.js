@@ -10,7 +10,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import {React, useState} from 'react';
+import {React, useState,useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -38,13 +38,25 @@ const Profile = () => {
   const [pincode, SetPincode] = useState('');
   const [mobile, SetMobile] = useState('');
   const [imagemodalVisible, setImageModalVisible] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState('');
+  const [imageobj, setImageobj] = useState({});
 
   const [refresh, setRefresh] = useState(false);
+  const showToasterror = () => {
+    Toast.show({
+      type: 'error',
+      text1: 'Please Fill the required Credentials correctly',
+      // text2: "And should not less than 7 char",
+
+      visibilityTime: 2000,
+    });
+    console.log('hello');
+  };
 
   const apicall = async () => {
     const storedEmployeeId = await AsyncStorage.getItem('token');
-    // console.log(storedEmployeeId);
+    console.log(storedEmployeeId);
+
     try {
       const response = await fetch(
         'http://192.168.10.189/Project-4/public/api/update-password',
@@ -64,7 +76,7 @@ const Profile = () => {
       );
 
       // const respo=await response.json();
-      console.log(await response.json());
+      // console.log(await response.json());
     } catch (error) {
       console.error(error);
     } finally {
@@ -73,6 +85,46 @@ const Profile = () => {
     SetCurrentpassword('');
     SetNewpassword('');
     SetConfirmpassword('');
+  };
+  useEffect(() => {
+    getprofiledata()
+  }, []);
+  const getprofiledata = async () => {
+    const storedEmployeeId = await AsyncStorage.getItem('token');
+    console.log(storedEmployeeId);
+
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/get-profile',
+        {
+          method: 'post',
+          headers: {
+            Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          // body: JSON.stringify({
+          //   old_password: currentpassword,
+          //   password: newpassword,
+          //   password_confirmation: confirmpassword,
+          // }),
+        },
+      );
+      // setImage(imageUri);
+      const respo = await response.json();
+      console.log(respo.data.name,'data');
+      setImageobj(respo)
+      if(respo.status===1){
+        console.log("status is 1");
+        setImage(respo?.data?.photo);
+        console.log(respo.data.photo);
+        setRefresh(!refresh)
+      }
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
   };
 
   const logintoggle = () => {
@@ -184,8 +236,8 @@ const Profile = () => {
         setModalVisible(false);
       } else {
         let imageUri = response.assets?.[0]?.uri;
-        console.log(response);
-        console.log(imageUri, 'Abhilash');
+        // console.log(response);
+        // console.log(imageUri, 'Abhilash');
         setImage(imageUri);
         setRefresh(!refresh);
         setImageModalVisible(false);
@@ -195,12 +247,14 @@ const Profile = () => {
   const openGallery = async () => {
     const options = {
       mediaType: 'photo',
-      includeBase64: false,
+      // includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
       quality: 0,
+      includeBase64: true,
     };
     launchImageLibrary(options, response => {
+      console.log(response,'img_response');
       if (response.didCancel) {
         console.log('User cancelled image picker');
         setModalVisible(false);
@@ -208,13 +262,25 @@ const Profile = () => {
         console.log('Image picker error: ', response.error);
         setModalVisible(false);
       } else {
-        // console.log(response.assets?.[0]?.uri,'image_url');
-        let imageUri = response.assets?.[0]?.uri;
+        console.log(response.assets?.[0]?.uri, 'image_url');
+        imageUri = response.assets?.[0]?.uri;
+
+        let imagebase64 = `data:${response.assets?.[0]?.type};base64,${response.assets?.[0]?.base64}`;
+        // let imageSource = {
+        //   fileCopyUri: response.assets[0].uri,
+        //   name: response.assets[0].fileName,
+        //   size: response.assets[0].fileSize,
+        //   type: response.assets[0].type,
+        //   uri: response.assets[0].uri,
+        // };
+
         console.log(imageUri, 'Abhilash');
         setRefresh(!refresh);
         setModalVisible(false);
         setImage(imageUri);
         setImageModalVisible(false);
+        generateHash(imagebase64);
+        // testapi(imageSource)
       }
     });
   };
@@ -223,6 +289,98 @@ const Profile = () => {
   };
   const handleButtonPress = () => {
     setImageModalVisible(true);
+  };
+
+  const generateHash = async imagebase64 => {
+    // console.log(imagebase64, 'eeeeeeee');
+    // console.log(imageSource, 'aaaaaaaaaa');
+    // let newimg=('data:image/png;base64'+ imagebase64)
+
+    // setImageobj(imageSource);
+    // var hashStringWithoutSalt = e.hashString;
+    // var hashName = e.hashName;
+    let hashData = new FormData();
+    hashData.append('request_type', 'change_image_profile');
+    hashData.append('photo', imagebase64);
+    // console.log(hashData,'hashhhhhhhhhh');
+
+    const storedEmployeeId = await AsyncStorage.getItem('token');
+    console.log(storedEmployeeId);
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/update-profile-photo ',
+        {
+          method: 'post',
+          headers: {
+            Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(hashData),
+        },
+      );
+
+      const json = await response.json();
+      console.log(json, 'Test_api');
+
+      if (json.status === 1) {
+        // console.log(json, 'hashGenerationMethod');
+        // var hashValue = json.hashSHAStringwithSalt;
+        // var result = {[hashName]: hashValue};
+        // PayUBizSdk.hashGenerated(result);
+        console.log(json, 'Upload_Api_Accepted');
+      } else {
+        console.log('cancled_hash');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  };
+  const testapi = async imageSource => {
+    // console.log(imagebase64, 'eeeeeeee');
+    console.log(imageSource, 'aaaaaaaaaa');
+
+    // setImageobj(imageSource);
+    // var hashStringWithoutSalt = e.hashString;
+    // var hashName = e.hashName;
+    let hashData = new FormData();
+    // hashData.append('request_type', 'change_image_profile');
+    hashData.append('photo', imageSource);
+    // console.log(hashData,'hashhhhhhhhhh');
+
+    const storedEmployeeId = await AsyncStorage.getItem('token');
+    try {
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/test-api ',
+        {
+          method: 'post',
+          headers: {
+            // Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(hashData),
+        },
+      );
+
+      const json = await response.json();
+      // const json =  response;
+      console.log(json, 'Test_api');
+
+      if (json.status === 1) {
+        // console.log(json, 'hashGenerationMethod');
+        // var hashValue = json.hashSHAStringwithSalt;
+        // var result = {[hashName]: hashValue};
+        // PayUBizSdk.hashGenerated(result);
+        console.log(json, 'Test_Api_Accepted');
+      } else {
+        console.log('cancled_hash');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
   };
 
   return (
@@ -251,17 +409,17 @@ const Profile = () => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-          <Entypo
-                name="squared-cross"
-                size={26}
-                color="black"
-                // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
-                onPress={() =>
-                  // setModalVisibleorderdetails(!modalVisibleorderdetails)
-                  setModalVisible(false)
-                }
-                style={{alignSelf: 'flex-end'}}
-              />
+            <Entypo
+              name="squared-cross"
+              size={26}
+              color="black"
+              // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
+              onPress={() =>
+                // setModalVisibleorderdetails(!modalVisibleorderdetails)
+                setModalVisible(false)
+              }
+              style={{alignSelf: 'flex-end'}}
+            />
             <Text style={styles.modalText}>CURRENT PASSWORD</Text>
             <TextInput
               value={currentpassword}
@@ -285,7 +443,13 @@ const Profile = () => {
               style={styles.savebutton}
               onPress={() => apicall()}>
               <Text
-                style={{fontSize: 20, alignSelf: 'center', fontWeight: '600',justifyContent:'center',color:'black'}}>
+                style={{
+                  fontSize: 20,
+                  alignSelf: 'center',
+                  fontWeight: '600',
+                  justifyContent: 'center',
+                  color: 'black',
+                }}>
                 Save
               </Text>
             </TouchableOpacity>
@@ -375,7 +539,7 @@ const Profile = () => {
                     fontSize: 22,
                     alignSelf: 'center',
                     fontWeight: '600',
-                    color:'black'
+                    color: 'black',
                   }}>
                   Save
                 </Text>
@@ -450,13 +614,16 @@ const Profile = () => {
         /> */}
         {image ? (
           // <Image source={image} style={styles.image} />
-          <Image source={{uri: image}}  style={{
-            height: 120,
-            width: 120,
-            marginTop: 40,
-            borderRadius: 120,
-            alignSelf: 'center',
-          }} />
+          <Image
+            source={{uri: image}}
+            style={{
+              height: 120,
+              width: 120,
+              marginTop: 40,
+              borderRadius: 120,
+              alignSelf: 'center',
+            }}
+          />
         ) : (
           <Image
             style={{
@@ -478,19 +645,20 @@ const Profile = () => {
           fontSize: 22,
           fontWeight: '600',
         }}>
-        Abhilash Mohanty
+        {/* Abhilash Mohanty */}
+        {imageobj?.data?.name}
       </Text>
       <TouchableOpacity
         style={styles.cart1}
         onPress={() => setModalVisible(!modalVisible)}>
         <MaterialIcons
           name="password"
-          size={28}
+          size={24}
           // color="black"
           // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
         />
 
-        <Text style={{fontSize: 20, fontWeight: '500', marginLeft: 20}}>
+        <Text style={{fontSize: 18, fontWeight: '500', marginLeft: 20}}>
           CHANGE PASSWORD
         </Text>
       </TouchableOpacity>
@@ -502,12 +670,12 @@ const Profile = () => {
           }>
           <FontAwesome
             name="first-order"
-            size={28}
+            size={24}
             // color="black"
             // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
           />
 
-          <Text style={{fontSize: 20, fontWeight: '500', marginLeft: 20}}>
+          <Text style={{fontSize: 18, fontWeight: '500', marginLeft: 20}}>
             BILLING ADDRESS
           </Text>
         </TouchableOpacity>
@@ -648,12 +816,11 @@ const styles = StyleSheet.create({
     width: '50%',
     // borderWidth: 1,
     // padding:10,
-    justifyContent:"center",
+    justifyContent: 'center',
     height: 35,
     // elevation: 2,
     // shadowOffset: 0.1,
-    backgroundColor:'#FF5900'
-   
+    backgroundColor: '#FF5900',
   },
   savebutton1: {
     width: '60%',
@@ -721,12 +888,11 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     marginBottom: 20,
   },
-  centeredViewimage:{
+  centeredViewimage: {
     flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
     // marginTop: 22,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-
-  }
+  },
 });

@@ -68,20 +68,18 @@ const Details = () => {
         setbannerimg(arrayModified);
         setRefresh(!refresh);
       }
-     
     } catch (error) {
       console.error(error);
     } finally {
     }
   };
   // console.log(data, '....len');
- 
 
   const fixbannerflatlist = ({item, index}) => (
     <View style={{marginHorizontal: 10, marginVertical: 10}}>
       <TouchableOpacity
         onPress={() => {
-          console.log(item.id,'---------------------------------------');
+          console.log(item.id, '---------------------------------------');
           navigation.navigate('Newarrival', {id: item.id, title: item.title});
           console.log(item);
         }}
@@ -160,28 +158,33 @@ const Details = () => {
     <TouchableOpacity
       style={{
         marginHorizontal: 10,
+        // backgroundColor:'pink',
+        // height:160,
+        // width:120,
+        // elevation:1
       }}
-      onPress={()=>{navigation.navigate('BuyNow',{id:item.id})}}
+      onPress={() => {
+        navigation.navigate('BuyNow', {id: item.id});
+      }}
       // onPress={()=>console.log(item.id,'-----------error')}
-      >
+    >
       <View>
         <Image
           source={{uri: item.images.small}}
-          style={{width: 80, height: 80, alignSelf: 'center'}}
+          style={{width: 100, height: 100, alignSelf: 'center',marginTop:10}}
         />
       </View>
-      <Text style={{color: 'black', fontWeight: '600'}}>
+      <Text style={{color: 'black', fontWeight: '600',marginTop:10}}>
         {item.product_name}
       </Text>
-      <View style={{flexDirection: 'row'}}>
-        <Text style={{color: 'black', fontWeight: 'bold'}}>Price</Text>
+      <View style={{flexDirection: 'row',marginTop:10}}>
+        <Text style={{color: 'black', fontWeight: 'bold'}}> Price</Text>
         <Text style={{color: 'black', fontSize: 17, fontWeight: '400'}}>
           {' '}
           Rs.{item.product_price}
         </Text>
       </View>
     </TouchableOpacity>
-    
   );
 
   // const allproductflatlist = ({item, index}) => (
@@ -217,7 +220,20 @@ const Details = () => {
   // );
 
   const allproductflatlist = ({item, index}) => (
-    <View style={{alignItems: 'center', marginLeft: 0, width: '44%',alignSelf:'center'}}>
+    <View
+      style={{
+        width: '46%',
+        // backgroundColor: 'pink',
+        Top: 10,
+        borderRadius: 10,
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 2,
+        // },
+        shadowOpacity: 0.25,
+        // shadowRadius: 3,
+        elevation: 5,
+      }}>
       <View style={styles.NewArrivalproduct}>
         {/* {liked ? (
           <View
@@ -276,10 +292,9 @@ const Details = () => {
             source={{uri: item.images.small}}
             style={styles.NewArrivalproductimage}
           />
-
         </TouchableOpacity>
       </View>
-      <View style={{alignSelf: 'flex-start'}}>
+      <View style={{alignSelf: 'flex-start',marginLeft:'6%'}}>
         <View>
           <Text
             style={{
@@ -291,14 +306,15 @@ const Details = () => {
             {item.product_name}
           </Text>
         </View>
-        <View style={styles.priceholder}>
+        <View >
           <Text
             style={{
               // color: 'black',
               fontSize: 16,
               margin: '2%',
-              marginRight: 15,
+              // marginRight: 15,
               fontWeight: '600',
+              marginBottom:'2%'
             }}>
             Rs.{item.product_price}
           </Text>
@@ -367,8 +383,7 @@ const Details = () => {
             style={{alignSelf: 'center'}}
           />
         </View>
-        {Array.isArray(bannerimg) && bannerimg.length ? 
-        (
+        {Array.isArray(bannerimg) && bannerimg.length ? (
           <View>
             <SliderBox
               images={bannerimg}
@@ -389,8 +404,7 @@ const Details = () => {
               resizeMode="stretch"
             />
           </View>
-        ) 
-        : (
+        ) : (
           <View>
             <Text>LOading</Text>
           </View>
@@ -419,7 +433,7 @@ const Details = () => {
         </View>
 
         <View style={{marginTop: 10}}>
-          <View style={{ marginTop: 15,marginLeft:10,marginBottom:10}}>
+          <View style={{marginTop: 15, marginLeft: 10, marginBottom: 10}}>
             <Text
               style={{
                 fontWeight: '500',
@@ -436,27 +450,32 @@ const Details = () => {
             renderItem={productflatlist}
             keyExtractor={(item, index) => index.toString()}
             style={{alignSelf: 'center', marginTop: 10}}
-          /> 
-          
-        </View> 
+          />
+        </View>
 
         <View style={{marginTop: 20}}>
-          <View style={{ marginTop: 15,marginLeft:10}}>
-            <Text style={{fontWeight: '700', fontSize: 28, color: 'black',marginBottom:10}}>
+          <View style={{marginTop: 15, marginLeft: 15}}>
+            <Text
+              style={{
+                fontWeight: '600',
+                fontSize: 26,
+                color: 'black',
+                marginBottom: 10,
+              }}>
               All Products
             </Text>
           </View>
-          <View style={{justifyContent: 'space-around',alignItems:"center"}}>
+          <View style={{alignSelf: 'center', justifyContent: 'center'}}>
             <FlatList
               // horizontal
-              // contentContainerStyle={{gap: 10}}
-              // columnWrapperStyle={{gap: 10}}
+              contentContainerStyle={{gap: 10}}
+              columnWrapperStyle={{gap: 10}}
               numColumns={2}
               data={allproducts}
               // data={[1,2,3,4,5]}
               renderItem={allproductflatlist}
               keyExtractor={(item, index) => index.toString()}
-              // style={{alignSelf: 'center', marginTop: 10}}
+              style={{marginLeft: 10, marginTop: 10}}
             />
           </View>
         </View>
@@ -651,18 +670,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   NewArrivalproduct: {
-    width: '100%',
-    backgroundColor: '#F0F0F0',
+    width: '80%',
+    // backgroundColor: '#F0F0F0',
+    // backgroundColor:'pink',
     marginVertical: 15,
-    borderRadius: 10,
+    
+    // Top:15,
+    // borderRadius: 10,
     padding: 5,
+    alignSelf:'center',
+    // borderRadius:80
+
+    // borderWidth:1
   },
   NewArrivalproductimage: {
-    width: '80%',
+    width: '100%',
     height: 180,
     alignSelf: 'center',
     // backgroundColor: 'red',
     // marginVertical: 15,
-    borderRadius: 15,
+    // borderRadius: 15,
   },
 });
