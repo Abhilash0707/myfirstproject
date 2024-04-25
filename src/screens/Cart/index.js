@@ -50,34 +50,34 @@ const Cart = () => {
   const [environmentTest, setEnvironmentTest] = useState('1');
   const [environmentProd, setEnvironmentProd] = useState('0');
   const eventEmitter = new NativeEventEmitter(PayUBizSdk);
-  useEffect(() => {
-    const paymentSuccess = eventEmitter.addListener(
-      'onPaymentSuccess',
-      onPaymentSuccess,
-    );
-    const paymentFailure = eventEmitter.addListener(
-      'onPaymentFailure',
-      onPaymentFailure,
-    );
-    const paymentCancel = eventEmitter.addListener(
-      'onPaymentCancel',
-      onPaymentCancel,
-    );
-    const error = eventEmitter.addListener('onError', onError);
-    const generateHashListener = eventEmitter.addListener(
-      'generateHash',
-      generateHash,
-    );
+  // useEffect(() => {
+  //   const paymentSuccess = eventEmitter.addListener(
+  //     'onPaymentSuccess',
+  //     onPaymentSuccess,
+  //   );
+  //   const paymentFailure = eventEmitter.addListener(
+  //     'onPaymentFailure',
+  //     onPaymentFailure,
+  //   );
+  //   const paymentCancel = eventEmitter.addListener(
+  //     'onPaymentCancel',
+  //     onPaymentCancel,
+  //   );
+  //   const error = eventEmitter.addListener('onError', onError);
+  //   const generateHashListener = eventEmitter.addListener(
+  //     'generateHash',
+  //     generateHash,
+  //   );
 
-    // Cleanup event listeners on component unmount
-    return () => {
-      paymentSuccess.remove();
-      paymentFailure.remove();
-      paymentCancel.remove();
-      error.remove();
-      generateHashListener.remove();
-    };
-  }, []);
+  //   // Cleanup event listeners on component unmount
+  //   return () => {
+  //     paymentSuccess.remove();
+  //     paymentFailure.remove();
+  //     paymentCancel.remove();
+  //     error.remove();
+  //     generateHashListener.remove();
+  //   };
+  // }, []);
   const onPaymentSuccess = e => {
     // console.log(e.merchantResponse, 'merchantResponse');
     // console.log(e.payuResponse, 'payuResponse');
@@ -94,64 +94,68 @@ const Cart = () => {
     console.log('payment cancel-------------------------------->>');
   };
 
-  const generateHash = async e => {
-    console.log(e, 'eeeeeeee');
-    var hashStringWithoutSalt = e.hashString;
-    var hashName = e.hashName;
-    let hashData = new FormData();
-    hashData.append('request_type', 'generate_hash');
-    hashData.append('hashStringwithoutSalt', e.hashString);
-    if (midpauy != undefined) {
-      hashData.append('payment_id', midpauy);
-      // console.log(this.state.midpauy, "this.state.midpauy");
-    }
+  // const generateHash = async e => {
+  //   console.log(e, 'eeeeeeee');
+  //   var hashStringWithoutSalt = e.hashString;
+  //   var hashName = e.hashName;
+  //   let hashData = new FormData();
+  //   hashData.append('request_type', 'generate_hash');
+  //   hashData.append('hashStringwithoutSalt', e.hashString);
+  //   // console.log(midpauy,'payment_id');
 
-    console.log(hashData, 'hashData');
+  //   if (midpauy != undefined && midpauy !='') {
+  //     hashData.append('payment_id', midpauy);
+  //     console.log(midpauy,'payment_id_inside');
+  //     // console.log(this.state.midpauy, "this.state.midpauy");
+  //   }
 
-    const storedEmployeeId = await AsyncStorage.getItem('token');
-    try {
-      const response = await fetch(
-        'http://192.168.10.189/Project-4/public/api/generate-hash ',
-        {
-          method: 'post',
-          headers: {
-            Authorization: `Bearer ${storedEmployeeId}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(hashData),
-        },
-      );
+  //   console.log(hashData, 'hashData');
 
-      const json = await response.json();
-      console.log(json, 'generate_hash');
+  //   const storedEmployeeId = await AsyncStorage.getItem('token');
+  //   try {
+  //     const response = await fetch(
+  //       'http://192.168.10.189/Project-4/public/api/generate-hash ',
+  //       {
+  //         method: 'post',
+  //         headers: {
+  //           Authorization: `Bearer ${storedEmployeeId}`,
+  //           Accept: 'application/json',
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify(hashData),
+  //       },
+  //     );
 
-      if (json.status === 1) {
-        console.log(json, 'hashGenerationMethod');
-        var hashValue = json.hashSHAStringwithSalt;
-        var result = {[hashName]: hashValue};
-        PayUBizSdk.hashGenerated(result);
-      } else {
-        console.log('cancled_hash');
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-    }
+  //     const json = await response.json();
+  //     console.log(json, 'generate_hash');
 
-    //  props.hashGenerationMethod(hashData, (success, error, data) => {
-    //       if (error) {
-    //         // console.log('Error While getting Hash in server');
-    //       } else {
-    //         // console.log(data, 'hashGenerationMethod');
-    //         var hashValue = data.hashSHAStringwithSalt;
-    //         var result = {[hashName]: hashValue};
-    //         PayUBizSdk.hashGenerated(result);
-    //       }
-    //     });
-  };
+  //     if (json.status === 1) {
+  //       console.log(json.hashSHAStringwithSalt, 'hashGenerationMethod');
+  //       var hashValue = json.hashSHAStringwithSalt;
+  //       var result = {[hashName]: hashValue};
+  //       console.log(result,'result');
+  //       PayUBizSdk.hashGenerated(result);
+  //     } else {
+  //       console.log('cancled_hash');
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //   }
+
+  //   //  props.hashGenerationMethod(hashData, (success, error, data) => {
+  //   //       if (error) {
+  //   //         // console.log('Error While getting Hash in server');
+  //   //       } else {
+  //   //         // console.log(data, 'hashGenerationMethod');
+  //   //         var hashValue = data.hashSHAStringwithSalt;
+  //   //         var result = {[hashName]: hashValue};
+  //   //         PayUBizSdk.hashGenerated(result);
+  //   //       }
+  //   //     });
+  // };
   const onError = e => {
-    console.log(e, 'onError');
+    console.log(e, 'onError2');
   };
 
   const apicall = async () => {
@@ -289,14 +293,17 @@ const Cart = () => {
       );
 
       const json = await response.json();
-      console.log(json.data.merchantId, 'place_orderrrrr');
-      setMidpauy(json.data.merchantId);
+      console.log(json, 'place_orderrrrr');
+      
 
       // return(json)
 
       if (json.status === 1) {
         // price_calculation();
-        createPaymentParams(json);
+        // createPaymentParams(json);
+        // setMidpauy(json.data.merchantId);
+        navigation.navigate('Payment_gateway', {
+          item:json,midpauy:json.data.merchantId}) 
         console.log('hiiiiii');
       } else {
         Alert.alert(json.message);
@@ -515,7 +522,7 @@ const Cart = () => {
   };
   const createPaymentParams = json => {
     var txnid = new Date().getTime().toString();
-    console.log(json.data.first_name, 'pppppkkkeyyyyy');
+    console.log(json, 'pppppkkkeyyyyy');
     // console.log('AutoSelectOtp: '+autoSelectOtp +'MerchantSmsPermission: '+merchantSMSPermission);
     var payUPaymentParams = {
       key: json.data.key,

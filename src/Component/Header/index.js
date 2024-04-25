@@ -279,14 +279,14 @@ const Header = () => {
     // </View>
     <View style={styles.headercontainer}>
      
-      <Octicons
-        name="three-bars"
-        size={25}
+      <Feather
+        name="align-left"
+        size={28}
         color="black"
         // onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}
         onPress={() => navigation.openDrawer()}
       />
-      <Text style={styles.headertext}>Suyog Comp</Text>
+      <Text style={styles.headertext}>Dafodill</Text>
       <Feather name="search" size={23} color="black"
         onPress={() => SetModalVisible(!modalVisible)}
       />

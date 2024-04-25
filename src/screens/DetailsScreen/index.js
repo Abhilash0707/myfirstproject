@@ -84,28 +84,28 @@ const Details = () => {
           console.log(item);
         }}
         style={{
-          height: 75,
-          width: 75,
-          borderRadius: 80,
+          height: 62,
+          width: 62,
+          // borderRadius: 80,
           backgroundColor: 'gray',
           alignItems: 'center',
           alignSelf: 'center',
           justifyContent: 'center',
         }}>
-        <View>
+        <View style={{alignSelf: 'center'}}>
           <Image
             source={{uri: item.image}}
             style={{
-              width: 70,
-              height: 70,
-              borderRadius: 70,
+              width: 60,
+              height: 60,
+              // borderRadius: 70,
               alignSelf: 'center',
             }}
           />
         </View>
       </TouchableOpacity>
       <View>
-        <Text style={{fontSize: 16, fontWeight: '800', color: 'black'}}>
+        <Text style={{fontSize: 16, fontWeight: '400', color: 'black'}}>
           {item.alt}
         </Text>
       </View>
@@ -157,29 +157,53 @@ const Details = () => {
   const productflatlist = ({item, index}) => (
     <TouchableOpacity
       style={{
-        marginHorizontal: 10,
-        // backgroundColor:'pink',
+        // marginHorizontal: 10,
+        backgroundColor:'#E5E9EF',
         // height:160,
         // width:120,
         // elevation:1
+        width: '44%',
+        // backgroundColor: 'pink',
+        Top: 10,
+        borderRadius: 10,
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 2,
+        // },
+        // shadowOpacity: 0.25,
+        // shadowRadius: 3,
+        elevation: 5,
+        // shadowColor: '#52006A',
+        // alignSelf:'center'
+        shadowColor:'black'
+        
       }}
       onPress={() => {
         navigation.navigate('BuyNow', {id: item.id});
       }}
       // onPress={()=>console.log(item.id,'-----------error')}
     >
-      <View>
+      <View style={{marginTop:15}}>
         <Image
           source={{uri: item.images.small}}
-          style={{width: 100, height: 100, alignSelf: 'center',marginTop:10}}
+          style={{
+            width: 100,
+            height: 100,
+            alignSelf: 'center',
+            justifyContent: 'center',
+            top:15
+          }}
         />
       </View>
-      <Text style={{color: 'black', fontWeight: '600',marginTop:10}}>
+      <View style={{marginTop:15}}>
+      <Text style={{color: 'black', fontWeight: '500', marginTop: 10,marginLeft:15,fontSize:17}}>
         {item.product_name}
       </Text>
-      <View style={{flexDirection: 'row',marginTop:10}}>
-        <Text style={{color: 'black', fontWeight: 'bold'}}> Price</Text>
-        <Text style={{color: 'black', fontSize: 17, fontWeight: '400'}}>
+      </View>
+      
+      <View style={{flexDirection: 'row', marginTop: 10,marginBottom:15,marginLeft:15,justifyContent:'space-between'}}>
+        <Text style={{color: 'black', fontWeight: '500',fontSize:17}}> Price</Text>
+        <Text style={{color: 'black', fontSize: 17, fontWeight: '400',marginRight:10}}>
           {' '}
           Rs.{item.product_price}
         </Text>
@@ -235,7 +259,7 @@ const Details = () => {
         elevation: 5,
       }}>
       <View style={styles.NewArrivalproduct}>
-        {/* {liked ? (
+        {liked ? (
           <View
             style={{
               alignSelf: 'flex-end',
@@ -285,7 +309,7 @@ const Details = () => {
               }}
             />
           </View>
-        )} */}
+        )}
 
         <TouchableOpacity>
           <Image
@@ -294,7 +318,7 @@ const Details = () => {
           />
         </TouchableOpacity>
       </View>
-      <View style={{alignSelf: 'flex-start',marginLeft:'6%'}}>
+      <View style={{alignSelf: 'flex-start', marginLeft: '6%'}}>
         <View>
           <Text
             style={{
@@ -306,7 +330,7 @@ const Details = () => {
             {item.product_name}
           </Text>
         </View>
-        <View >
+        <View>
           <Text
             style={{
               // color: 'black',
@@ -314,7 +338,7 @@ const Details = () => {
               margin: '2%',
               // marginRight: 15,
               fontWeight: '600',
-              marginBottom:'2%'
+              marginBottom: '2%',
             }}>
             Rs.{item.product_price}
           </Text>
@@ -365,29 +389,33 @@ const Details = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView style={{width:'94%',alignSelf:'center'}}>
         <Header />
         <View
           style={{
             justifyContent: 'center',
             width: '100%',
-            borderBottomWidth: 1,
+            // borderBottomWidth: 1,
             borderBottomColor: 'gray',
-            // backgroundColor:'red'
+            backgroundColor:'white',
+            elevation:10,
+            // borderRadius:10
           }}>
           <FlatList
             horizontal
             data={data.homeFixBanners}
             renderItem={fixbannerflatlist}
             keyExtractor={(item, index) => index.toString()}
-            style={{alignSelf: 'center'}}
+            style={{alignSelf: 'center',top:10,marginBottom:10}}
           />
         </View>
+        <View style={{width:'100%',height:200,backgroundColor:'#fff'}}>
         {Array.isArray(bannerimg) && bannerimg.length ? (
-          <View>
-            <SliderBox
+
+              <SliderBox
               images={bannerimg}
-              sliderBoxHeight={300}
+              // sliderBoxHeight={250}
+              // SliderBoxWidth={'70%'}
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
                 position: 'absolute',
@@ -397,24 +425,37 @@ const Details = () => {
                 alignSelf: 'center',
                 justifyContent: 'center',
                 paddingVertical: 10,
+                borderTopRightRadius:20
+                
+              }}
+             
+              ImageComponentStyle={{
+                borderBottomLeftRadius: 15,
+                borderBottomRightRadius: 15,
+                borderTopRightRadius: 15,
+                borderTopLeftRadius: 15,
+                overflow:'hidden',
+                width:'90%',
+                marginLeft:'-6%'
+             
               }}
               autoplay
               circleLoop
-              autoplayInterval={4000}
-              resizeMode="stretch"
+              autoplayInterval={3000}
+              resizeMode="center"
             />
-          </View>
+       
         ) : (
           <View>
             <Text>LOading</Text>
           </View>
         )}
-
+   </View>
         <View
           style={{
             alignItems: 'center',
-            marginTop: 15,
-            borderBottomWidth: 1,
+            marginTop: 20,
+            // borderBottomWidth: 1,
             borderBottomColor: 'gray',
             paddingBottom: 10,
           }}>
@@ -433,26 +474,34 @@ const Details = () => {
         </View>
 
         <View style={{marginTop: 10}}>
-          <View style={{marginTop: 15, marginLeft: 10, marginBottom: 10}}>
+          <View style={{marginTop: 15, marginLeft: 10, marginBottom: 10,flexDirection:'row',justifyContent:'space-between'}}>
             <Text
               style={{
                 fontWeight: '500',
                 fontSize: 24,
                 color: 'black',
                 // textDecorationLine: 'underline',
+                marginLeft:10
               }}>
-              {''}New Arrivals
+              {''}New Release
             </Text>
+            <TouchableOpacity style={{marginRight:10,justifyContent:'center',fontSize:20}}><Text style={{fontSize:17,color:'black',fontWeight:'500'}}>See all</Text></TouchableOpacity>
+            
           </View>
           <FlatList
-            horizontal
+            // horizontal
             data={fixbanners}
             renderItem={productflatlist}
             keyExtractor={(item, index) => index.toString()}
             style={{alignSelf: 'center', marginTop: 10}}
+            ContainerStyle={{gap: 10}}
+            // columnWrapperStyle={{gap: 10}}
+            numColumns={2}
+            columnWrapperStyle={{justifyContent: 'space-between'}} 
+            contentContainerStyle={{gap:20}}
           />
         </View>
-
+{/* 
         <View style={{marginTop: 20}}>
           <View style={{marginTop: 15, marginLeft: 15}}>
             <Text
@@ -478,21 +527,8 @@ const Details = () => {
               style={{marginLeft: 10, marginTop: 10}}
             />
           </View>
-        </View>
-        {/* <View style={{marginTop: 10}}>
-          <View style={{alignItems: 'center', marginTop: 15}}>
-            <Text style={{fontWeight: 'bold', fontSize: 24, color: 'black'}}>
-            BestSeller
-            </Text>
-          </View>
-          <FlatList
-            horizontal
-            data={bestseller}
-            renderItem={bestsellerflatlist}
-            keyExtractor={(item, index) => index.toString()}
-            style={{alignSelf: 'center', marginTop: 10}}
-          />
-        </View>  */}
+        </View> */}
+       
       </ScrollView>
     </View>
   );
@@ -503,6 +539,7 @@ export default Details;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'white'
   },
 
   headercontainer: {
@@ -674,11 +711,11 @@ const styles = StyleSheet.create({
     // backgroundColor: '#F0F0F0',
     // backgroundColor:'pink',
     marginVertical: 15,
-    
+
     // Top:15,
     // borderRadius: 10,
     padding: 5,
-    alignSelf:'center',
+    alignSelf: 'center',
     // borderRadius:80
 
     // borderWidth:1

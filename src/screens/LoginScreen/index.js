@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {black} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import Toast from 'react-native-toast-message';
+import {SliderBox} from 'react-native-image-slider-box';
 
 // const employeeData = [
 //   {id: '001', password: 'password1'},
@@ -28,7 +29,14 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
-  const [token, setToken] = useState('');
+  const [bannerimg, setBannerimg] = useState([
+    require('../../Assects/Images/basket.jpg'),
+    // require('../../Assects/Images/download(1).jpg'),
+    require('../../Assects/Images/bags.jpg'),
+    require('../../Assects/Images/aaaa.jpg'),
+    require('../../Assects/Images/hangers.jpg'),
+  ]);
+  
 
   const showToasterror = () => {
     Toast.show({
@@ -40,6 +48,7 @@ const Login = () => {
     });
     console.log('hello');
   };
+  
 
   // const validateLogin = () => {
   //    const employee = employeeData.find(emp => emp.id === employeeId && emp.password === password); {
@@ -105,7 +114,6 @@ const Login = () => {
       if (json.status === 1) {
         console.log(json, 'lll');
         console.log(json.access_token, 'token');
-   
 
         let asynctoken = await AsyncStorage.setItem('token', json.access_token);
 
@@ -127,8 +135,10 @@ const Login = () => {
     <KeyboardAvoidingView>
       <View style={styles.container}>
         {/* <Toast /> */}
-        <View style={{flex: 1, alignSelf: 'center'}}>
-          <Image
+        <View
+         style={{ alignSelf: 'center',}}
+         >
+          {/* <Image
             style={{
               height: 550,
               width: 450,
@@ -145,7 +155,36 @@ const Login = () => {
             }}
             // resizeMode="stretch"
             source={require('../../Assects/Images/hangers.jpg')}
+          /> */}
+             <SliderBox
+            images={bannerimg}
+            sliderBoxHeight={550}
+            // parentWidth={420}
+            // sliderBoxRadius={80}
+            paginationBoxVerticalPadding={20}
+            paginationBoxStyle={{
+              position: 'absolute',
+              // marginRight: 20,
+              // borderRadius:50,
+              // // borderWidth:2,
+              // // borderColor:'black',
+             
+              bottom: 400,
+              // padding: 0,
+              // alignItems: 'center',
+              // alignSelf: 'center',
+              // justifyContent: 'center',
+              // paddingVertical: 10,
+            }}
+            autoplay
+            circleLoop
+            autoplayInterval={4000}
+            resizeMode="stretch"
+            ImageComponentStyle={{borderBottomLeftRadius: 30,borderBottomRightRadius: 30}}
           />
+        </View>
+        <View >
+       
         </View>
         <View style={styles.modalView}>
           <View style={{marginBottom: 40}}>
@@ -174,12 +213,14 @@ const Login = () => {
             <TextInput
               style={styles.input}
               placeholder="Email"
+              placeholderTextColor="black" 
               value={email}
               onChangeText={text => setEmail(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
+              placeholderTextColor="black" 
               secureTextEntry
               value={password}
               onChangeText={text => setPassword(text)}
@@ -214,7 +255,7 @@ const Login = () => {
               style={{
                 flexDirection: 'row',
                 alignSelf: 'center',
-                marginTop: 10,
+                marginTop: 20,
               }}>
               <Text style={{color: 'black', fontWeight: '600', fontSize: 16}}>
                 Don't have an account?
@@ -285,7 +326,9 @@ const styles = StyleSheet.create({
     // shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    zIndex: 1,
-    top: Dimensions.get('window').height / 2 - 50,
+    // zIndex: 1,
+    position:'absolute',
+    // top: Dimensions.get('window').height / 2 - 50,
+    top:'46%'
   },
 });
