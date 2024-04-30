@@ -1,4 +1,4 @@
-import { NativeEventEmitter, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, NativeEventEmitter, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect,useState } from 'react'
 import {DrawerActions, useNavigation} from '@react-navigation/native';
 import PayUBizSdk from 'payu-non-seam-less-react';
@@ -34,11 +34,17 @@ const Payment_gateway = props => {
             payUGenerateHash.remove();
         };
       }, []);
+      useEffect(()=>{
+        // console.log);
+        createPaymentParams(props.route.params)
+      },[])
+      
+     
       const onPaymentSuccess = e => {
         // console.log(e.merchantResponse, 'merchantResponse');
         console.log(e.payuResponse, 'payuResponse');
         checkForPayuSuccess(e.payuResponse);
-        // this.props.navigation.replace('DrawerContainer');
+      //  navigation.navigate('Payment_Page');
       };
       const onPaymentFailure = e => {
         // console.log(e.merchantResponse, 'merchantResponse failure');
@@ -48,6 +54,58 @@ const Payment_gateway = props => {
       };
       const onPaymentCancel = e => {
         console.log('payment cancel-------------------------------->>');
+      };
+      const checkForPayuSuccess = (item) => {
+        // setLoader(true);
+        Alert.alert('Payment_Sucess')
+        console.log(item,'Sucess_Item');
+      
+    
+        // let data = JSONbig.parse(result);
+        // // console.log(data, 'Json parse data');
+        // let form_data = new FormData();
+        // for (var key in data) {
+        //   if (key == 'id') {
+        //     form_data.append('mihpayid', data[key].toString());
+        //   }
+        //   Platform.OS === 'android'
+        //     ? form_data.append(key, data[key].toString())
+        //     : form_data.append(key, data[key]);
+        // }
+    
+        // console.log(form_data, 'PayU check sucess formdta');
+        // props.payuSubmitMethod(form_data => {
+        //   if (error) {
+        //     console.log(error, 'Error');
+        //     setLoader(false);
+        //   } else {
+        //     setLoader(false);
+        //     console.log(data.data, 'PayU check result after api call');
+        //     if (data.status == 1) {
+        //       setLoader(false);
+    
+        //       navigation.navigate('PaymentPage', {
+        //         param: data.param,
+        //         status: data.status,
+        //       });
+        //     } else {
+        //       setLoader(false);
+    
+        //       // this.navigation.navigate('PaymentPage', {
+        //       //   param: data.data.param,
+        //       //   status: data.data.status,
+        //       // });
+        //       Alert.alert('Attentation!', data.message, [
+        //         {
+        //           text: 'OK',
+        //           onPress: () => {
+        //             navigation.navigate('Payment_Page');
+        //           },
+        //         },
+        //       ]);
+        //     }
+        //   }
+        // });
       };
     
       const generateHash = async e => {
@@ -168,12 +226,12 @@ const Payment_gateway = props => {
 
 
     const createPaymentParams = json => {
-        var txnid = new Date().getTime().toString();
+        // var txnid = new Date().getTime().toString();
         console.log(json, 'pppppkkkeyyyyy2222');
         // console.log('AutoSelectOtp: '+autoSelectOtp +'MerchantSmsPermission: '+merchantSMSPermission);
         var payUPaymentParams = {
           key: json.item.data.key,
-          transactionId: txnid,
+          transactionId: json.item.data.txn_id,
           amount: json.item.data.amount.toString(),
           // amount:"2355",
           productInfo: json.item.data.product_info,
@@ -199,6 +257,26 @@ const Payment_gateway = props => {
             // walletUrn: '100000',
           },
         };
+        // var payUCheckoutProConfig = {
+        //   // primaryColor: "#aabbcc",'rgb(233,169,69)'
+        //   // secondaryColor: "<Color Hex Code e.g. #000000>",
+        //   merchantName: 'OTDC',
+        //   autoSelectOtp: true,
+        //   merchantResponseTimeout: 5000,
+        //   surePayCount: 0 - 3,
+        //   // paymentModesOrder: [
+        //   //   {UPI: 'TEZ'},
+        //   //   {Wallets: 'PAYTM'},
+        //   //   {Wallets: 'PHONEPE'},
+        //   // ],
+        //   paymentModesOrder: [
+        //     {cards: ''},
+        //     {'net banking': ''},
+        //     {upi: ''},
+        //     {wallets: ''},
+        //     {emi: ''},
+        //   ],
+        // };
        
     
         var paymentObject = {
@@ -209,8 +287,11 @@ const Payment_gateway = props => {
         PayUBizSdk.openCheckoutScreen(paymentObject);
       };
   return (
-    <TouchableOpacity onPress={()=>createPaymentParams(props.route.params)}>
-      <Text>Payment_gateway</Text>
+    <TouchableOpacity
+     onPress={()=>createPaymentParams(props.route.params)}
+    // onPress={()=> navigation.navigate('Copy',{item:props.route.params})}
+     >
+      {/* <Text>Payment_gateway</Text> */}
 
     </TouchableOpacity>
   )

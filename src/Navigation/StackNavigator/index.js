@@ -14,6 +14,8 @@ import Wishlist from '../../screens/Wishlist';
 import Listing from '../../screens/Listingpage';
 import Payment_Page from '../../screens/Payment_Page';
 import Payment_gateway from '../../screens/Payment_gateway';
+import Copy from '../../screens/Copy';
+
 
 
 
@@ -35,6 +37,7 @@ const StackNav = () => {
             <Stack.Screen name="Listing" component={Listing} />
             <Stack.Screen name="Payment_Page" component={Payment_Page} />
             <Stack.Screen name="Payment_gateway" component={Payment_gateway} />
+            <Stack.Screen name="Copy" component={Copy} />
         </Stack.Navigator>
     );
 }
