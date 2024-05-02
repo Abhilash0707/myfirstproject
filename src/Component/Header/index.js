@@ -333,7 +333,7 @@ const Header = () => {
           <MenuItem
             onPress={() => {
               navigation.navigate('Profile')
-              setVisible(true)
+              setVisible(false)
             }}
             textStyle={styles.menutext}>
             Profile

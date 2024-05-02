@@ -14,6 +14,11 @@ import Wishlist from '../../screens/Wishlist';
 import Listing from '../../screens/Listingpage';
 import Payment_Page from '../../screens/Payment_Page';
 import Payment_gateway from '../../screens/Payment_gateway';
+import Billing_Address from '../../screens/Billing_Address';
+import Add_delivery_Address from '../../screens/Add_delivery_Address';
+
+
+
 
 
 
@@ -35,6 +40,9 @@ const StackNav = () => {
             <Stack.Screen name="Listing" component={Listing} />
             <Stack.Screen name="Payment_Page" component={Payment_Page} />
             <Stack.Screen name="Payment_gateway" component={Payment_gateway} />
+            <Stack.Screen name="Billing_Address" component={Billing_Address} />
+            <Stack.Screen name="Add_delivery_Address" component={Add_delivery_Address} />
+            
         </Stack.Navigator>
     );
 }

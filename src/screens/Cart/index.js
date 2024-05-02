@@ -49,111 +49,124 @@ const Cart = () => {
 
   const [environmentTest, setEnvironmentTest] = useState('1');
   const [environmentProd, setEnvironmentProd] = useState('0');
-  const eventEmitter = new NativeEventEmitter(PayUBizSdk);
-  // useEffect(() => {
-  //   const paymentSuccess = eventEmitter.addListener(
-  //     'onPaymentSuccess',
-  //     onPaymentSuccess,
-  //   );
-  //   const paymentFailure = eventEmitter.addListener(
-  //     'onPaymentFailure',
-  //     onPaymentFailure,
-  //   );
-  //   const paymentCancel = eventEmitter.addListener(
-  //     'onPaymentCancel',
-  //     onPaymentCancel,
-  //   );
-  //   const error = eventEmitter.addListener('onError', onError);
-  //   const generateHashListener = eventEmitter.addListener(
-  //     'generateHash',
-  //     generateHash,
-  //   );
+ 
+  useEffect(() => {
+    const eventEmitter = new NativeEventEmitter(PayUBizSdk);
+    const payUOnPaymentSuccess = eventEmitter.addListener(
+      'onPaymentSuccess',
+      onPaymentSuccess,
+    );
+    const payUOnPaymentFailure = eventEmitter.addListener(
+      'onPaymentFailure',
+      onPaymentFailure,
+    );
+    const payUOnPaymentCancel = eventEmitter.addListener(
+      'onPaymentCancel',
+      onPaymentCancel,
+    );
+    const payUOnError = eventEmitter.addListener('onError', onError);
+    const payUGenerateHash = eventEmitter.addListener(
+      'generateHash',
+      generateHash,
+    );
 
-  //   // Cleanup event listeners on component unmount
-  //   return () => {
-  //     paymentSuccess.remove();
-  //     paymentFailure.remove();
-  //     paymentCancel.remove();
-  //     error.remove();
-  //     generateHashListener.remove();
-  //   };
-  // }, []);
+    console.log('check useefectparams');
+    // Cleanup event listeners on component unmount
+    return () => {
+      // console.log("Unsubscribed!!!!")
+      payUOnPaymentSuccess.remove();
+      payUOnPaymentFailure.remove();
+      payUOnPaymentCancel.remove();
+      payUOnError.remove();
+      payUGenerateHash.remove();
+    };
+  }, []);
+
+
   const onPaymentSuccess = e => {
-    // console.log(e.merchantResponse, 'merchantResponse');
-    // console.log(e.payuResponse, 'payuResponse');
+    console.log(e.payuResponse,'payuResponse')
     checkForPayuSuccess(e.payuResponse);
-    // this.props.navigation.replace('DrawerContainer');
+    // Alert.alert('Payment_Sucess')
+ 
   };
   const onPaymentFailure = e => {
-    // console.log(e.merchantResponse, 'merchantResponse failure');
-    // console.log(e.payuResponse, 'payuResponse failure');
+
     checkForPayuFailure(e.payuResponse);
-    // this.props.navigation.replace('DrawerContainer');
+  
   };
   const onPaymentCancel = e => {
     console.log('payment cancel-------------------------------->>');
   };
 
-  // const generateHash = async e => {
-  //   console.log(e, 'eeeeeeee');
-  //   var hashStringWithoutSalt = e.hashString;
-  //   var hashName = e.hashName;
-  //   let hashData = new FormData();
-  //   hashData.append('request_type', 'generate_hash');
-  //   hashData.append('hashStringwithoutSalt', e.hashString);
-  //   // console.log(midpauy,'payment_id');
+  const generateHash = async e => {
+    console.log(e, 'eeeeeeee');
+    try {
+      var hashStringWithoutSalt = e.hashString;
+      var hashName = e.hashName;
+      let hashData = new FormData();
+      hashData.append('request_type', 'generate_hash');
+      hashData.append('hashStringwithoutSalt', e.hashString);
+      // console.log(midpauy,'payment_id');
+      hashData.append('payment_id', midpauy);
 
-  //   if (midpauy != undefined && midpauy !='') {
-  //     hashData.append('payment_id', midpauy);
-  //     console.log(midpauy,'payment_id_inside');
-  //     // console.log(this.state.midpauy, "this.state.midpauy");
-  //   }
+      // if (midpauy != undefined && midpauy !='') {
 
-  //   console.log(hashData, 'hashData');
+      //   console.log(midpauy,'payment_id_inside');
+      //   // console.log(this.state.midpauy, "this.state.midpauy");
+      // }
 
-  //   const storedEmployeeId = await AsyncStorage.getItem('token');
-  //   try {
-  //     const response = await fetch(
-  //       'http://192.168.10.189/Project-4/public/api/generate-hash ',
-  //       {
-  //         method: 'post',
-  //         headers: {
-  //           Authorization: `Bearer ${storedEmployeeId}`,
-  //           Accept: 'application/json',
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify(hashData),
-  //       },
-  //     );
+      console.log(hashData, 'hashData');
 
-  //     const json = await response.json();
-  //     console.log(json, 'generate_hash');
+      const storedEmployeeId = await AsyncStorage.getItem('token');
+      // console.log(storedEmployeeId,'tokennnnn');
 
-  //     if (json.status === 1) {
-  //       console.log(json.hashSHAStringwithSalt, 'hashGenerationMethod');
-  //       var hashValue = json.hashSHAStringwithSalt;
-  //       var result = {[hashName]: hashValue};
-  //       console.log(result,'result');
-  //       PayUBizSdk.hashGenerated(result);
-  //     } else {
-  //       console.log('cancled_hash');
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //   }
+      const response = await fetch(
+        'http://192.168.10.189/Project-4/public/api/generate-hash',
+        {
+          method: 'post',
+          headers: {
+            Authorization: `Bearer ${storedEmployeeId}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          // body: JSON.stringify(hashData),
+          body: JSON.stringify({
+            request_type: 'generate_hash',
+            hashStringwithoutSalt: e.hashString,
+            payment_id: midpauy,
+          }),
+        },
+      );
 
-  //   //  props.hashGenerationMethod(hashData, (success, error, data) => {
-  //   //       if (error) {
-  //   //         // console.log('Error While getting Hash in server');
-  //   //       } else {
-  //   //         // console.log(data, 'hashGenerationMethod');
-  //   //         var hashValue = data.hashSHAStringwithSalt;
-  //   //         var result = {[hashName]: hashValue};
-  //   //         PayUBizSdk.hashGenerated(result);
-  //   //       }
-  //   //     });
-  // };
+      const json = await response.json();
+      console.log(json, 'generate_hash1');
+
+      if (json.status === 1) {
+        console.log(json.hashSHAStringwithSalt, 'hashGenerationMethod');
+        var hashValue = json.hashSHAStringwithSalt;
+        var result = {[hashName]: hashValue};
+        console.log(result, 'result');
+        PayUBizSdk.hashGenerated(result);
+      } else {
+        console.log('cancled_hash');
+      }
+    } catch (error) {
+      console.error(error, 'hasherror');
+    } finally {
+    }
+
+    //  props.hashGenerationMethod(hashData, (success, error, data) => {
+    //       if (error) {
+    //         // console.log('Error While getting Hash in server');
+    //       } else {
+    //         // console.log(data, 'hashGenerationMethod');
+    //         var hashValue = data.hashSHAStringwithSalt;
+    //         var result = {[hashName]: hashValue};
+    //         PayUBizSdk.hashGenerated(result);
+    //       }
+    //     });
+  };
+
   const onError = e => {
     console.log(e, 'onError2');
   };
@@ -294,17 +307,16 @@ const Cart = () => {
 
       const json = await response.json();
       console.log(json, 'place_orderrrrr');
-      
 
       // return(json)
 
       if (json.status === 1) {
         // price_calculation();
-        // createPaymentParams(json);
-        // setMidpauy(json.data.merchantId);
-        navigation.navigate('Payment_gateway', {
-          item:json,midpauy:json.data.merchantId}) 
-        console.log('hiiiiii');
+        createPaymentParams(json);
+        setMidpauy(json.data.merchantId);
+        // navigation.navigate('Payment_gateway', {
+        //   item:json,midpauy:json.data.merchantId})
+        // console.log('hiiiiii');
       } else {
         Alert.alert(json.message);
       }
@@ -313,6 +325,101 @@ const Cart = () => {
       console.error(error);
     } finally {
     }
+  };
+  const checkForPayuSuccess = (item) => {
+    // setLoader(true);
+    Alert.alert('Payment_Sucess');
+    console.log(item, 'Sucess_Item');
+
+    // let data = JSONbig.parse(result);
+    // // console.log(data, 'Json parse data');
+    // let form_data = new FormData();
+    // for (var key in data) {
+    //   if (key == 'id') {
+    //     form_data.append('mihpayid', data[key].toString());
+    //   }
+    //   Platform.OS === 'android'
+    //     ? form_data.append(key, data[key].toString())
+    //     : form_data.append(key, data[key]);
+    // }
+
+    // console.log(form_data, 'PayU check sucess formdta');
+    // props.payuSubmitMethod(form_data => {
+    //   if (error) {
+    //     console.log(error, 'Error');
+    //     setLoader(false);
+    //   } else {
+    //     setLoader(false);
+    //     console.log(data.data, 'PayU check result after api call');
+    //     if (data.status == 1) {
+    //       setLoader(false);
+
+    //       navigation.navigate('PaymentPage', {
+    //         param: data.param,
+    //         status: data.status,
+    //       });
+    //     } else {
+    //       setLoader(false);
+
+    //       // this.navigation.navigate('PaymentPage', {
+    //       //   param: data.data.param,
+    //       //   status: data.data.status,
+    //       // });
+    //       Alert.alert('Attentation!', data.message, [
+    //         {
+    //           text: 'OK',
+    //           onPress: () => {
+    //             navigation.navigate('Payment_Page');
+    //           },
+    //         },
+    //       ]);
+    //     }
+    //   }
+    // });
+  };
+  const checkForPayuFailure = () => {
+
+    Alert.alert('Payment_Failed');
+    console.log(item, 'Failure_Item');
+    // setLoader(true);
+    // let data = JSONbig.parse(result);
+    // let form_data = new FormData();
+
+    // for (var key in data) {
+    //   if (key == 'id') {
+    //     form_data.append('mihpayid', data[key].toString());
+    //   }
+    //   Platform.OS === 'android'
+    //     ? form_data.append(key, data[key].toString())
+    //     : form_data.append(key, data[key]);
+    // }
+
+    // console.log(form_data, 'PayU check failure fromdata');
+    // props.payuSubmitMethodOnFailure(
+    //   form_data,
+    //   (success: any, error: any, data: any) => {
+    //     if (error) {
+    //       console.log(error, 'PayU check failure after api call Error');
+    //        setLoader(false);
+    //     } else {
+    //        setLoader(false);
+    //       console.log(data, 'PayU check failure after api call');
+    //       if (data.status == 0) {
+    //          setLoader(false);
+    //         navigation.navigate('PaymentPage', {
+    //           param: data.param,
+    //           status: data.status,
+    //         });
+    //       } else {
+    //          setLoader(false);
+    //         navigation.navigate('PaymentPage', {
+    //           param: data.param,
+    //           status: data.status,
+    //         });
+    //       }
+    //     }
+    //   },
+    // );
   };
 
   const deleteapi = async item => {
@@ -431,7 +538,7 @@ const Cart = () => {
     // console.log(item.item.size, "cartttt__item]]]]]]]]]]]");
     return (
       <View style={styles.cart1}>
-        <View style={{flexDirection: 'row',width:'65%'}}>
+        <View style={{flexDirection: 'row', width: '65%'}}>
           <View style={{height: 120, width: 120}}>
             <Image
               style={{height: 80, width: 80, marginTop: 10, marginLeft: 10}}
@@ -441,7 +548,7 @@ const Cart = () => {
           </View>
           <View style={{width: '65%', marginTop: 10}}>
             <Text
-              style={{fontSize: 16, color: 'black', fontWeight:'500'}}
+              style={{fontSize: 16, color: 'black', fontWeight: '500'}}
               numberOfLines={2}
               ellipsizeMode="tail">
               {item.item.product.description}
@@ -464,7 +571,7 @@ const Cart = () => {
               marginRight: 20,
               fontSize: 15,
               color: 'black',
-              fontWeight:'500'
+              fontWeight: '500',
             }}>
             Rs. {item.item.product.product_price}
           </Text>
@@ -474,7 +581,7 @@ const Cart = () => {
               marginRight: 20,
               fontSize: 17,
               marginTop: 10,
-              fontWeight:'500'
+              fontWeight: '500',
             }}>
             Qty : {item.item.quantity}
           </Text>
@@ -492,7 +599,7 @@ const Cart = () => {
               Number(item.item.product.product_price)}
           </Text>
         </View>
-        <View style={{marginRight:0}}>
+        <View style={{marginRight: 0}}>
           <Entypo
             name="squared-cross"
             size={20}
@@ -521,22 +628,22 @@ const Cart = () => {
     return val;
   };
   const createPaymentParams = json => {
-    var txnid = new Date().getTime().toString();
-    console.log(json, 'pppppkkkeyyyyy');
+    // var txnid = new Date().getTime().toString();
+    console.log(json.data.failureUrl, 'pppppkkkeyyyyy');
     // console.log('AutoSelectOtp: '+autoSelectOtp +'MerchantSmsPermission: '+merchantSMSPermission);
     var payUPaymentParams = {
       key: json.data.key,
-      transactionId: txnid,
+      transactionId: json.data.txn_id,
       amount: json.data.amount.toString(),
       // amount:"2355",
       productInfo: json.data.product_info,
       firstName: json.data.first_name,
       email: json.data.email,
       phone: json.data.phone,
-      ios_surl: json.data.successUrl,
-      ios_furl: json.data.failureUrl,
-      android_surl: json.data.successUrl,
-      android_furl: json.data.failureUrl,
+      ios_surl: json.data.surl,
+      ios_furl: json.data.furl,
+      android_surl: json.data.surl,
+      android_furl: json.data.furl,
       // environment: penvironment,
       environment:
         json.data.ENVIRONMENT == 'TEST' ? environmentTest : environmentProd,
@@ -575,21 +682,12 @@ const Cart = () => {
 
     var paymentObject = {
       payUPaymentParams: payUPaymentParams,
-      // payUCheckoutProConfig is optional
-      // Detail can be found in latter section
-      // payUCheckoutProConfig: payUCheckoutProConfig,
     };
 
     console.log(paymentObject, 'paymentObject');
     PayUBizSdk.openCheckoutScreen(paymentObject);
-    // PayUBizSdk.openCheckoutScreen(createPaymentParams());
   };
 
-  // console.log(total,'total Price');
-  const launchPayU = () => {
-    // console.log('Method launched amount =' + amount);
-    PayUBizSdk.openCheckoutScreen(createPaymentParams());
-  };
   const addresslist = ({item, index}) => {
     // console.log(item, "Address__item]]]]]]]]]]]");
     // console.log(item,'iiiiiiiiiiiiiii');
