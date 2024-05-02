@@ -666,7 +666,8 @@ const Profile = () => {
         <TouchableOpacity
           style={styles.cart1}
           onPress={() =>
-            setModalVisibleorderdetails(!modalVisibleorderdetails)
+            // setModalVisibleorderdetails(!modalVisibleorderdetails)
+            navigation.navigate('Billing_Address')
           }>
           <FontAwesome
             name="first-order"
